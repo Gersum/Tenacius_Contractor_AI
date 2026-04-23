@@ -1,0 +1,20 @@
+{
+  "company_name": "Northstar Analytics",
+  "sector": "B2B software",
+  "peer_group_definition": "Series A/B B2B software companies with visible engineering hiring signals",
+  "top_quartile_companies": [
+    "Peer Alpha",
+    "Peer Beta",
+    "Peer Gamma"
+  ],
+  "prospect_position_summary": "The prospect appears interested in growth but lacks strong public evidence of scaled hiring maturity.",
+  "gap_findings": [
+    {
+      "title": "Hiring signal visibility gap",
+      "description": "Peers show clearer engineering growth signals than the prospect.",
+      "confidence": "medium"
+    }
+  ],
+  "recommended_hook": "Lead with a grounded observation about growth pressure and offer help scaling delivery without slowing hiring.",
+  "confidence": "low"
+}

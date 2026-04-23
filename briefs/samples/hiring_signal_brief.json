@@ -1,0 +1,27 @@
+{
+  "company_name": "Northstar Analytics",
+  "crunchbase_ref": "cb_northstar_analytics",
+  "segment_recommendation": "recently_funded_series_ab",
+  "segment_confidence": "medium",
+  "funding_signal": {
+    "name": "recent_funding",
+    "value": "Series A reported within the last 180 days",
+    "confidence": "medium"
+  },
+  "job_post_signal": {
+    "name": "job_post_velocity",
+    "value": "Engineering hiring appears active",
+    "confidence": "low"
+  },
+  "layoff_signal": {
+    "name": "layoffs",
+    "value": "No recent layoff signal detected in stub flow",
+    "confidence": "low"
+  },
+  "leadership_change_signal": {
+    "name": "leadership_change",
+    "value": "Leadership-change detection not yet implemented",
+    "confidence": "low"
+  },
+  "ai_maturity_score": 1
+}
