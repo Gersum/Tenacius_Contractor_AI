@@ -1,0 +1,26 @@
+[
+  {
+    "run_label": "dev_baseline",
+    "domain": "retail",
+    "model_name": "pending_pinned_model",
+    "pass_at_1_mean": null,
+    "confidence_interval_95": null,
+    "cost_usd": null,
+    "p50_latency_ms": null,
+    "p95_latency_ms": null,
+    "status": "not_run",
+    "notes": "Awaiting real tau2-bench execution against the pinned dev-tier model."
+  },
+  {
+    "run_label": "reproduction_check",
+    "domain": "retail",
+    "model_name": "pending_pinned_model",
+    "pass_at_1_mean": null,
+    "confidence_interval_95": null,
+    "cost_usd": null,
+    "p50_latency_ms": null,
+    "p95_latency_ms": null,
+    "status": "not_run",
+    "notes": "Keep this entry for the required reproduction check once real runs are available."
+  }
+]
