@@ -4,15 +4,22 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from agent.channels.email.handler import (
     EmailDeliveryError,
     EmailHandler,
     MalformedWebhookPayloadError,
 )
-from agent.channels.sms.handler import SmsDeliveryError, SmsHandler, MalformedWebhookPayloadError as SmsMalformedWebhookPayloadError
+from agent.channels.sms.handler import (
+    MalformedWebhookPayloadError as SmsMalformedWebhookPayloadError,
+    SmsDeliveryError,
+    SmsHandler,
+)
 from agent.config import Settings
-from agent.models.schemas import Channel, LeadRecord, LeadStatus, MessageDraft
+from agent.enrichment.pipeline import EnrichmentPipeline
+from agent.enrichment.public_signals import PublicPageSnapshot, PublicSignalCollector
+from agent.models.schemas import Channel, ConfidenceLevel, LeadRecord, LeadStatus, MessageDraft
 from agent.orchestration.pipeline import ConversionEnginePipeline
 from agent.traces.logger import JsonlTraceLogger
 from eval.tau_bench.runner import TauBenchRunner
@@ -45,6 +52,66 @@ class SmokeTests(unittest.TestCase):
             self.assertTrue(Path(result.calendar_booking.preview_ref).exists())
             self.assertTrue(Path(result.hubspot_sync.preview_ref).exists())
             self.assertTrue(settings.resolved_trace_output_path.exists())
+
+    def test_enrichment_pipeline_collects_public_signals(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            settings = Settings(
+                runtime_artifacts_path=str(temp_path / "runtime"),
+                trace_output_path=str(temp_path / "traces" / "agent_trace_log.jsonl"),
+                score_output_path=str(temp_path / "eval" / "score_log.json"),
+            )
+            pipeline = EnrichmentPipeline(settings=settings)
+
+            lead = LeadRecord(
+                company_name="ExampleCo",
+                domain="exampleco.com",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@exampleco.com",
+            )
+
+            def fake_capture(self, url: str) -> PublicPageSnapshot:
+                if "crunchbase.com" in url:
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo - Crunchbase",
+                        text="ExampleCo announced a Series B funding round and raised $20M from public investors.",
+                    )
+                if url.endswith("/careers"):
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo Careers",
+                        text="Open roles\nSenior Data Engineer\nProduct Manager\nStaff Software Engineer",
+                        link_texts=("Senior Data Engineer", "Product Manager", "Staff Software Engineer"),
+                    )
+                if url.endswith("/news"):
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo News",
+                        text="ExampleCo appointed Priya Rao as CTO and named Jordan Lee as VP of Engineering.",
+                    )
+                return PublicPageSnapshot(
+                    url=url,
+                    final_url=url,
+                    title="ExampleCo",
+                    text="Careers\nNews\nWe are hiring across engineering and product.",
+                    links=("https://exampleco.com/careers", "https://exampleco.com/news"),
+                    link_texts=("Careers", "News"),
+                )
+
+            with patch.object(PublicSignalCollector, "_capture_public_page", new=fake_capture):
+                brief = pipeline.build_hiring_signal_brief(lead)
+
+            self.assertEqual(brief.funding_signal.confidence, ConfidenceLevel.HIGH)
+            self.assertEqual(brief.job_post_signal.confidence, ConfidenceLevel.HIGH)
+            self.assertEqual(brief.leadership_change_signal.confidence, ConfidenceLevel.HIGH)
+            self.assertIn("Series B", brief.funding_signal.value)
+            self.assertIn("Senior Data Engineer", brief.job_post_signal.value)
+            self.assertIn("appointed Priya Rao as CTO", brief.leadership_change_signal.value)
+            self.assertGreaterEqual(len(brief.source_refs), 4)
 
     def test_tau_runner_writes_placeholder_logs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
