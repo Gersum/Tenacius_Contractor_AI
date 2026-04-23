@@ -1,0 +1,16 @@
+{
+  "record_id": "hs_lead_b4bdbc85d4a2",
+  "status": "upserted",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/hubspot/lead_b4bdbc85d4a2.json",
+  "fields": {
+    "company_name": "Northstar Analytics",
+    "contact_email": "amina@northstaranalytics.example",
+    "icp_segment": "recently_funded_series_ab",
+    "conversation_stage": "booked",
+    "qualification_status": "qualified",
+    "booking_url": "https://cal.example/tenacious-discovery/lead_b4bdbc85d4a2",
+    "ai_maturity_score": 1,
+    "recommended_hook": "Lead with a grounded note about growth pressure and ask whether delivery bandwidth is keeping pace with hiring plans."
+  },
+  "synced_at": "2026-04-23T19:24:18.554249+00:00"
+}

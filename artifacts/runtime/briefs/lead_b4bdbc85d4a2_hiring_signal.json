@@ -1,0 +1,94 @@
+{
+  "company_name": "Northstar Analytics",
+  "crunchbase_ref": "cb_northstar_analytics",
+  "segment_recommendation": "recently_funded_series_ab",
+  "segment_confidence": "medium",
+  "funding_signal": {
+    "name": "recent_funding",
+    "value": "a recent growth signal consistent with Series A/B momentum",
+    "confidence": "medium",
+    "evidence": [
+      "Public funding retrieval is not wired yet; this is a scaffolded placeholder."
+    ],
+    "source_refs": [
+      {
+        "title": "Crunchbase sample placeholder",
+        "url": "https://www.crunchbase.com/organization/northstar-analytics",
+        "note": "Replace with real Crunchbase ODM lookup.",
+        "accessed_at": "2026-04-23T19:24:18.524044+00:00"
+      }
+    ],
+    "freshness_days": 45
+  },
+  "job_post_signal": {
+    "name": "job_post_velocity",
+    "value": "public engineering hiring activity appears present but not yet quantified",
+    "confidence": "low",
+    "evidence": [
+      "Job-post scraping scaffold exists; velocity calculation is still pending."
+    ],
+    "source_refs": [
+      {
+        "title": "BuiltIn jobs placeholder",
+        "url": "https://www.builtin.com/company/northstar-analytics/jobs",
+        "note": "Replace with public job-post retrieval.",
+        "accessed_at": "2026-04-23T19:24:18.524081+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "layoff_signal": {
+    "name": "layoffs",
+    "value": "no layoffs.csv match found for Northstar Analytics",
+    "confidence": "medium",
+    "evidence": [
+      "Searched the configured layoffs.csv snapshot by normalized company name and found no exact match."
+    ],
+    "source_refs": [
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-23T19:24:18.524305+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "leadership_change_signal": {
+    "name": "leadership_change",
+    "value": "leadership-change detection is pending press-release retrieval",
+    "confidence": "low",
+    "evidence": [
+      "Leadership-change enrichment is a placeholder in this scaffold."
+    ],
+    "source_refs": [],
+    "freshness_days": null
+  },
+  "ai_maturity_score": 1,
+  "bench_match_summary": "Bench match is currently inferred as moderate for Python and data work until bench inputs are wired.",
+  "ai_maturity_reasoning": [
+    "The current scaffold assumes light but non-zero AI readiness.",
+    "Replace this with weighted public-signal scoring before evaluation."
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase sample placeholder",
+      "url": "https://www.crunchbase.com/organization/northstar-analytics",
+      "note": "Replace with real Crunchbase ODM lookup.",
+      "accessed_at": "2026-04-23T19:24:18.524044+00:00"
+    },
+    {
+      "title": "BuiltIn jobs placeholder",
+      "url": "https://www.builtin.com/company/northstar-analytics/jobs",
+      "note": "Replace with public job-post retrieval.",
+      "accessed_at": "2026-04-23T19:24:18.524081+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-23T19:24:18.524305+00:00"
+    }
+  ],
+  "generated_at": "2026-04-23T19:24:18.552405+00:00"
+}

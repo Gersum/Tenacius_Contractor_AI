@@ -1,0 +1,27 @@
+{
+  "lead": {
+    "company_name": "Northstar Analytics",
+    "domain": "northstaranalytics.example",
+    "synthetic_contact_name": "Amina Bekele",
+    "synthetic_contact_email": "amina@northstaranalytics.example",
+    "synthetic_contact_phone": "+251911000000",
+    "source_type": "synthetic",
+    "icp_segment": "recently_funded_series_ab",
+    "icp_confidence": "medium",
+    "status": "booked",
+    "created_at": "2026-04-23T19:24:18.523571+00:00",
+    "updated_at": "2026-04-23T19:24:18.523751+00:00",
+    "lead_id": "lead_b4bdbc85d4a2"
+  },
+  "conversation": {
+    "lead_id": "lead_b4bdbc85d4a2",
+    "channel": "email",
+    "stage": "booked",
+    "turn_count": 1,
+    "qualification_status": "qualified",
+    "booking_status": "booked",
+    "human_handoff_required": false,
+    "last_message_at": "2026-04-23T19:24:18.553631+00:00",
+    "conversation_id": "conv_088c65eb2e69"
+  }
+}

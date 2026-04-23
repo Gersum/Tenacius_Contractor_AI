@@ -1,0 +1,41 @@
+{
+  "company_name": "Northstar Analytics",
+  "sector": "B2B software",
+  "peer_group_definition": "Series A/B B2B software companies showing hiring or delivery-scale pressure",
+  "prospect_position_summary": "Relative to a fast-growing peer set, the prospect shows early growth signals but not a strongly visible delivery-capacity story.",
+  "recommended_hook": "Lead with a grounded note about growth pressure and ask whether delivery bandwidth is keeping pace with hiring plans.",
+  "confidence": "medium",
+  "top_quartile_companies": [
+    "Peer Alpha",
+    "Peer Beta",
+    "Peer Gamma"
+  ],
+  "gap_findings": [
+    {
+      "title": "Delivery-capacity visibility gap",
+      "description": "Peer companies present clearer evidence of structured engineering scale than the prospect currently does.",
+      "confidence": "medium"
+    }
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase sample placeholder",
+      "url": "https://www.crunchbase.com/organization/northstar-analytics",
+      "note": "Replace with real Crunchbase ODM lookup.",
+      "accessed_at": "2026-04-23T19:24:18.524044+00:00"
+    },
+    {
+      "title": "BuiltIn jobs placeholder",
+      "url": "https://www.builtin.com/company/northstar-analytics/jobs",
+      "note": "Replace with public job-post retrieval.",
+      "accessed_at": "2026-04-23T19:24:18.524081+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-23T19:24:18.524305+00:00"
+    }
+  ],
+  "generated_at": "2026-04-23T19:24:18.552777+00:00"
+}

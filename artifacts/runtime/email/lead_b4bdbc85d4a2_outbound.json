@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_b4bdbc85d4a2",
+  "to_address": "amina@northstaranalytics.example",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Hi Amina Bekele,\n\nFrom the public signals we could verify, it looks like Northstar Analytics may be entering a period where delivery demand rises faster than hiring can absorb. We saw a recent growth signal consistent with Series A/B momentum, and the public hiring picture suggests there may be some growth pressure.\n\nLead with a grounded note about growth pressure and ask whether delivery bandwidth is keeping pace with hiring plans. We can explore likely fit for Python and data engineering support, but detailed staffing commitments should stay with a human Tenacious delivery lead until live bench data is connected.\n\nIf that is directionally true, I can share a short point of view or line up a 30-minute discovery call.\n",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_b4bdbc85d4a2_outbound.json",
+  "subject": "Northstar Analytics delivery capacity and hiring pressure",
+  "sent_at": "2026-04-23T19:24:18.553453+00:00"
+}
