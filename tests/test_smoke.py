@@ -10,6 +10,7 @@ from agent.channels.email.handler import (
     EmailHandler,
     MalformedWebhookPayloadError,
 )
+from agent.channels.sms.handler import SmsDeliveryError, SmsHandler, MalformedWebhookPayloadError as SmsMalformedWebhookPayloadError
 from agent.config import Settings
 from agent.models.schemas import Channel, LeadRecord, LeadStatus, MessageDraft
 from agent.orchestration.pipeline import ConversionEnginePipeline
@@ -134,6 +135,62 @@ class SmokeTests(unittest.TestCase):
 
             self.assertEqual(ctx.exception.result.status, "failed")
             self.assertTrue(Path(ctx.exception.result.preview_ref).exists())
+
+    def test_sms_handler_routes_inbound_reply_webhook_to_callback(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            received_messages = []
+            handler = SmsHandler(
+                runtime_dir=runtime_dir,
+                provider_name="africas_talking_sink",
+                sink_mode=True,
+                inbound_handler=received_messages.append,
+            )
+
+            event = handler.handle_webhook(
+                {
+                    "type": "sms.reply",
+                    "message_id": "sms_123",
+                    "from_number": "+251911000000",
+                    "to_number": "+251900000000",
+                    "text": "Tuesday afternoon works for me.",
+                }
+            )
+
+            self.assertEqual(event.status, "received")
+            self.assertEqual(event.inbound_message.channel, Channel.SMS)
+            self.assertEqual(len(received_messages), 1)
+            self.assertEqual(received_messages[0].body, "Tuesday afternoon works for me.")
+            self.assertTrue((runtime_dir / "sms" / "webhook_sms_123.json").exists())
+            self.assertTrue((runtime_dir / "sms" / "inbound_sms_123.json").exists())
+
+    def test_sms_handler_rejects_invalid_outbound_send(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            handler = SmsHandler(runtime_dir=runtime_dir, provider_name="africas_talking_sink", sink_mode=True)
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+                synthetic_contact_phone="",
+            )
+
+            with self.assertRaises(SmsDeliveryError) as ctx:
+                handler.send_scheduling_message(lead, "Confirming your discovery call.")
+
+            self.assertEqual(ctx.exception.result.status, "failed")
+            self.assertTrue(Path(ctx.exception.result.preview_ref).exists())
+
+    def test_sms_handler_rejects_malformed_webhook_payloads(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            handler = SmsHandler(runtime_dir=runtime_dir, provider_name="africas_talking_sink", sink_mode=True)
+
+            with self.assertRaises(SmsMalformedWebhookPayloadError):
+                handler.handle_webhook({"message_id": "sms_bad"})
+
+            self.assertTrue((runtime_dir / "sms" / "webhook_sms_bad.json").exists())
 
 
 if __name__ == "__main__":

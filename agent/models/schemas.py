@@ -194,6 +194,18 @@ class EmailWebhookEvent:
 
 
 @dataclass
+class SmsWebhookEvent:
+    provider: str
+    event_type: str
+    status: str
+    message_id: str | None = None
+    payload_ref: str | None = None
+    error_message: str | None = None
+    inbound_message: InboundMessage | None = None
+    received_at: datetime = field(default_factory=utc_now)
+
+
+@dataclass
 class SmsDeliveryResult:
     delivery_id: str
     to_number: str
