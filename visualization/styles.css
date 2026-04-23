@@ -1,0 +1,97 @@
+:root {
+  --bg: #07111a;
+  --panel: rgba(16, 26, 37, 0.78);
+  --line: rgba(173, 196, 216, 0.18);
+  --text: #ecf5f9;
+  --muted: #9eb1be;
+  --accent: #73f3cb;
+  --accent2: #f3b56f;
+  --radius: 22px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(115, 243, 203, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 0%, rgba(243, 181, 111, 0.12), transparent 26%),
+    linear-gradient(180deg, #08131d, var(--bg));
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+
+.hero, .panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+
+.eyebrow, .kicker {
+  margin: 0 0 10px;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+}
+
+h1, h2, p { margin-top: 0; }
+
+h1 { font-size: clamp(2.4rem, 4vw, 4.4rem); line-height: 0.95; max-width: 12ch; }
+
+.lede, .subtle { color: var(--muted); line-height: 1.6; max-width: 60ch; }
+
+.pillset { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; }
+
+.pillset span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.panel { padding: 20px; min-height: 220px; }
+
+.row {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.error {
+  width: min(900px, calc(100% - 32px));
+  margin: 24px auto;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255, 143, 122, 0.12);
+  border: 1px solid rgba(255, 143, 122, 0.24);
+}
+
+@media (max-width: 800px) {
+  .hero, .grid { grid-template-columns: 1fr; flex-direction: column; }
+}
