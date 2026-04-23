@@ -1,0 +1,2 @@
+# This scaffold intentionally runs on the Python standard library only.
+# Integration dependencies can be added later when live provider wiring is enabled.
