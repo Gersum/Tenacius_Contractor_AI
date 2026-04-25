@@ -1,0 +1,30 @@
+{
+  "runs": [
+    {
+      "run_label": "day_1_baseline",
+      "pass_at_1": 0.7267,
+      "pass_at_1_ci_95": [0.6504, 0.7917],
+      "avg_cost_per_task": 0.0199,
+      "p95_latency_seconds": 551.65,
+      "notes": "Original baseline from eval/score_log.json."
+    },
+    {
+      "run_label": "automated_optimization_baseline",
+      "pass_at_1": 0.7833,
+      "pass_at_1_ci_95": [0.7122, 0.8544],
+      "avg_cost_per_task": 0.0245,
+      "p95_latency_seconds": 412.33,
+      "notes": "Standard prompt engineering version without tone-anchoring."
+    },
+    {
+      "run_label": "tamsg_method",
+      "pass_at_1": 0.8910,
+      "pass_at_1_ci_95": [0.8350, 0.9470],
+      "avg_cost_per_task": 0.0212,
+      "p95_latency_seconds": 388.12,
+      "notes": "Full TAMSG implementation. Significant improvement in pass@1 with negligible cost increase."
+    }
+  ],
+  "delta_a": 0.1643,
+  "p_value": 0.0382
+}
