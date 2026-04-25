@@ -1,0 +1,21 @@
+{
+  "booking": {
+    "booking_id": "booking_failed_lead_af6b96b7764e",
+    "event_type_slug": "tenacious-discovery",
+    "attendee_email": "alex.morgan@example.com",
+    "host_email": "delivery-lead@example.com",
+    "scheduled_for": "2026-04-24T11:00:00Z",
+    "booking_url": "http://127.0.0.1:3004/bookings/lead_af6b96b7764e",
+    "preview_ref": "artifacts/runtime/calcom/lead_af6b96b7764e.json",
+    "provider": "cal.com",
+    "mode": "error",
+    "status": "failed",
+    "host_username": "recrord-abebe-lsvu3a",
+    "raw_response_ref": null,
+    "error_message": "Cal.com API server was unreachable on the configured booking endpoints. Check that the self-hosted API is running on one of: http://127.0.0.1:3003/v2/bookings, http://127.0.0.1:3003/api/v2/bookings, http://127.0.0.1:3004/v2/bookings, http://127.0.0.1:3004/api/v2/bookings.",
+    "created_at": "2026-04-25T17:36:54.316641+00:00"
+  },
+  "metadata": {
+    "failure_mode": "live_request_failed"
+  }
+}

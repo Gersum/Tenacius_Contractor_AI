@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_54cd85547535",
+  "to_address": "alex.morgan@example.com",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Hi Alex Morgan,\n\nFrom the public signals we could verify, it looks like Vercel may be entering a period where delivery demand rises faster than hiring can absorb. We saw Public Crunchbase and funding search pages did not expose accessible funding detail., and the public hiring picture suggests there may be some growth pressure.\n\nFor teams at that stage, Tenacious can help the public signals suggest a concrete delivery question worth testing. The competitor-gap brief also suggests a few questions worth validating, but I would treat them as hypotheses rather than claims.\n\nWe can explore likely fit for Python and data engineering support, but detailed staffing commitments should stay with a human Tenacious delivery lead until live bench data is connected. The attached case studies back the pattern if you want a reference point.\n\nIf that is directionally true, I can share a short point of view or line up a 30-minute discovery call.\n",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_54cd85547535_outbound.json",
+  "subject": "Vercel delivery capacity and hiring pressure",
+  "sent_at": "2026-04-25T17:13:01.139967+00:00"
+}

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from urllib import error
 
-from agent.calendar.calcom import CalComBookingClient, InvalidCalComWebhookError
+from agent.calendar.calcom import CalComBookingClient, CalComBookingError, InvalidCalComWebhookError
 from agent.channels.email.handler import (
     EmailDeliveryError,
     EmailHandler,
@@ -509,6 +511,321 @@ class SmokeTests(unittest.TestCase):
             self.assertEqual(booking.mode, "api")
             self.assertEqual(booking.status, "confirmed")
             self.assertEqual(booking.booking_url, "http://127.0.0.1:3000/booking/booking_uid_123")
+
+    def test_calcom_client_retries_api_prefix_when_primary_booking_route_404s(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3000",
+                app_base_url="http://127.0.0.1:3000",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            class FakeResponse:
+                def __enter__(self) -> "FakeResponse":
+                    return self
+
+                def __exit__(self, exc_type, exc, tb) -> None:
+                    return None
+
+                def read(self) -> bytes:
+                    return json.dumps(
+                        {
+                            "status": "success",
+                            "data": {
+                                "uid": "booking_uid_456",
+                                "start": "2026-04-24T11:00:00Z",
+                                "bookingUrl": "http://127.0.0.1:3000/booking/booking_uid_456",
+                            },
+                        }
+                    ).encode("utf-8")
+
+            not_found = error.HTTPError(
+                url="http://127.0.0.1:3003/v2/bookings",
+                code=404,
+                msg="Not Found",
+                hdrs=None,
+                fp=io.BytesIO(b"{\"status\":\"error\"}"),
+            )
+
+            with patch(
+                "agent.calendar.calcom.request.urlopen",
+                side_effect=[not_found, FakeResponse()],
+            ) as mocked_urlopen:
+                booking = client.book_discovery_call(lead, "sales@tenacious.example")
+
+            first_request = mocked_urlopen.call_args_list[0].args[0]
+            second_request = mocked_urlopen.call_args_list[1].args[0]
+            self.assertEqual(first_request.full_url, "http://127.0.0.1:3003/v2/bookings")
+            self.assertEqual(second_request.full_url, "http://127.0.0.1:3003/api/v2/bookings")
+            self.assertEqual(booking.booking_id, "booking_uid_456")
+
+    def test_calcom_client_raises_clear_error_when_api_server_is_unreachable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3000",
+                app_base_url="http://127.0.0.1:3000",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            with patch(
+                "agent.calendar.calcom.request.urlopen",
+                side_effect=error.URLError("Connection refused"),
+            ):
+                with self.assertRaises(CalComBookingError) as ctx:
+                    client.book_discovery_call(lead, "sales@tenacious.example")
+
+            self.assertIn("API server was unreachable", str(ctx.exception))
+
+    def test_calcom_client_falls_back_to_app_base_when_api_base_is_unreachable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3004",
+                app_base_url="http://127.0.0.1:3004",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            class FakeResponse:
+                def __enter__(self) -> "FakeResponse":
+                    return self
+
+                def __exit__(self, exc_type, exc, tb) -> None:
+                    return None
+
+                def read(self) -> bytes:
+                    return json.dumps(
+                        {
+                            "status": "success",
+                            "data": {
+                                "uid": "booking_uid_789",
+                                "start": "2026-04-24T11:00:00Z",
+                                "bookingUrl": "http://127.0.0.1:3004/booking/booking_uid_789",
+                            },
+                        }
+                    ).encode("utf-8")
+
+            with patch(
+                "agent.calendar.calcom.request.urlopen",
+                side_effect=[
+                    error.URLError("Connection refused"),
+                    error.URLError("Connection refused"),
+                    error.HTTPError(
+                        url="http://127.0.0.1:3004/v2/bookings",
+                        code=404,
+                        msg="Not Found",
+                        hdrs=None,
+                        fp=io.BytesIO(b"{\"status\":\"error\"}"),
+                    ),
+                    FakeResponse(),
+                ],
+            ) as mocked_urlopen:
+                booking = client.book_discovery_call(lead, "sales@tenacious.example")
+
+            attempted_urls = [call.args[0].full_url for call in mocked_urlopen.call_args_list]
+            self.assertEqual(
+                attempted_urls,
+                [
+                    "http://127.0.0.1:3003/v2/bookings",
+                    "http://127.0.0.1:3003/api/v2/bookings",
+                    "http://127.0.0.1:3004/v2/bookings",
+                    "http://127.0.0.1:3004/api/v2/bookings",
+                ],
+            )
+            self.assertEqual(booking.booking_id, "booking_uid_789")
+
+    def test_calcom_client_falls_back_to_legacy_booking_endpoint_when_api_v2_is_broken(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3004",
+                app_base_url="http://127.0.0.1:3004",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="30min",
+                event_type_id=1,
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-28T11:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            class FakeLegacyResponse:
+                def __enter__(self) -> "FakeLegacyResponse":
+                    return self
+
+                def __exit__(self, exc_type, exc, tb) -> None:
+                    return None
+
+                def read(self) -> bytes:
+                    return json.dumps(
+                        {
+                            "uid": "legacy_booking_uid_123",
+                            "startTime": "2026-04-28T11:00:00.000Z",
+                            "status": "ACCEPTED",
+                        }
+                    ).encode("utf-8")
+
+            with patch(
+                "agent.calendar.calcom.request.urlopen",
+                side_effect=[
+                    error.URLError("Connection refused"),
+                    error.URLError("Connection refused"),
+                    error.HTTPError(
+                        url="http://127.0.0.1:3004/v2/bookings",
+                        code=500,
+                        msg="Internal Server Error",
+                        hdrs=None,
+                        fp=io.BytesIO(b"Internal Server Error"),
+                    ),
+                    FakeLegacyResponse(),
+                ],
+            ) as mocked_urlopen:
+                booking = client.book_discovery_call(lead, "sales@tenacious.example")
+
+            attempted_urls = [call.args[0].full_url for call in mocked_urlopen.call_args_list]
+            self.assertEqual(
+                attempted_urls,
+                [
+                    "http://127.0.0.1:3003/v2/bookings",
+                    "http://127.0.0.1:3003/api/v2/bookings",
+                    "http://127.0.0.1:3004/v2/bookings",
+                    "http://127.0.0.1:3004/api/book/event",
+                ],
+            )
+            legacy_request = mocked_urlopen.call_args_list[-1].args[0]
+            legacy_body = json.loads(legacy_request.data.decode("utf-8"))
+            self.assertEqual(legacy_body["eventTypeId"], 1)
+            self.assertEqual(legacy_body["responses"]["email"], "amina@northstaranalytics.example")
+            self.assertEqual(booking.booking_id, "legacy_booking_uid_123")
+            self.assertEqual(booking.booking_url, "http://127.0.0.1:3004/booking/legacy_booking_uid_123")
+
+    def test_calcom_client_retries_legacy_booking_with_next_slot_when_first_slot_is_unavailable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3004",
+                app_base_url="http://127.0.0.1:3004",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="30min",
+                event_type_id=1,
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-28T12:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            class FakeLegacyResponse:
+                def __enter__(self) -> "FakeLegacyResponse":
+                    return self
+
+                def __exit__(self, exc_type, exc, tb) -> None:
+                    return None
+
+                def read(self) -> bytes:
+                    return json.dumps(
+                        {
+                            "uid": "legacy_booking_uid_retry",
+                            "startTime": "2026-04-28T09:00:00.000Z",
+                            "status": "ACCEPTED",
+                        }
+                    ).encode("utf-8")
+
+            with patch(
+                "agent.calendar.calcom.request.urlopen",
+                side_effect=[
+                    error.URLError("Connection refused"),
+                    error.URLError("Connection refused"),
+                    error.HTTPError(
+                        url="http://127.0.0.1:3004/v2/bookings",
+                        code=500,
+                        msg="Internal Server Error",
+                        hdrs=None,
+                        fp=io.BytesIO(b"Internal Server Error"),
+                    ),
+                    error.HTTPError(
+                        url="http://127.0.0.1:3004/api/book/event",
+                        code=409,
+                        msg="Conflict",
+                        hdrs=None,
+                        fp=io.BytesIO(b'{\"message\":\"no_available_users_found_error\"}'),
+                    ),
+                    FakeLegacyResponse(),
+                ],
+            ) as mocked_urlopen:
+                booking = client.book_discovery_call(lead, "sales@tenacious.example")
+
+            attempted_urls = [call.args[0].full_url for call in mocked_urlopen.call_args_list]
+            self.assertEqual(
+                attempted_urls,
+                [
+                    "http://127.0.0.1:3003/v2/bookings",
+                    "http://127.0.0.1:3003/api/v2/bookings",
+                    "http://127.0.0.1:3004/v2/bookings",
+                    "http://127.0.0.1:3004/api/book/event",
+                    "http://127.0.0.1:3004/api/book/event",
+                ],
+            )
+            first_legacy_body = json.loads(mocked_urlopen.call_args_list[3].args[0].data.decode("utf-8"))
+            second_legacy_body = json.loads(mocked_urlopen.call_args_list[4].args[0].data.decode("utf-8"))
+            self.assertEqual(first_legacy_body["start"], "2026-04-28T12:00:00Z")
+            self.assertEqual(second_legacy_body["start"], "2026-04-28T09:00:00Z")
+            self.assertEqual(booking.booking_id, "legacy_booking_uid_retry")
 
     def test_calcom_webhook_validates_secret_and_routes_events(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -1,0 +1,108 @@
+{
+  "request": {
+    "start": "2026-04-28T09:00:00Z",
+    "eventTypeSlug": "30min",
+    "attendee": {
+      "name": "Alex Morgan",
+      "email": "alex.morgan@example.com",
+      "timeZone": "Africa/Addis_Ababa",
+      "phoneNumber": "+251911000000",
+      "language": "en"
+    },
+    "metadata": {
+      "leadId": "lead_f3cf6973a743",
+      "companyName": "Vercel",
+      "domain": "vercel.com",
+      "sourceType": "synthetic"
+    },
+    "lengthInMinutes": 30,
+    "username": "recrord-abebe-lsvu3a"
+  },
+  "response": {
+    "id": 5,
+    "uid": "czc4hbdpB5YXueLrYYngeb",
+    "idempotencyKey": "615c01cb-0600-522f-8d92-99bcfe0c0a15",
+    "userId": 1,
+    "userPrimaryEmail": "recordabebe2@gmail.com",
+    "eventTypeId": 1,
+    "title": "30 min meeting between Record Abebe and Alex Morgan",
+    "description": "",
+    "customInputs": {},
+    "responses": {
+      "name": "Alex Morgan",
+      "email": "alex.morgan@example.com",
+      "location": {
+        "value": "integrations:daily",
+        "optionValue": ""
+      }
+    },
+    "startTime": "2026-04-29T09:00:00.000Z",
+    "endTime": "2026-04-29T09:30:00.000Z",
+    "location": "integrations:daily",
+    "createdAt": "2026-04-25T18:23:43.285Z",
+    "updatedAt": "2026-04-25T18:23:43.285Z",
+    "status": "ACCEPTED",
+    "paid": false,
+    "destinationCalendarId": null,
+    "cancellationReason": null,
+    "rejectionReason": null,
+    "reassignReason": null,
+    "reassignById": null,
+    "dynamicEventSlugRef": null,
+    "dynamicGroupSlugRef": null,
+    "rescheduled": null,
+    "fromReschedule": null,
+    "recurringEventId": null,
+    "smsReminderNumber": null,
+    "scheduledJobs": [],
+    "metadata": {
+      "domain": "vercel.com",
+      "leadId": "lead_f3cf6973a743",
+      "sourceType": "synthetic",
+      "companyName": "Vercel"
+    },
+    "isRecorded": false,
+    "iCalUID": "czc4hbdpB5YXueLrYYngeb@Cal.com",
+    "iCalSequence": 0,
+    "rating": null,
+    "ratingFeedback": null,
+    "noShowHost": false,
+    "oneTimePassword": null,
+    "cancelledBy": null,
+    "rescheduledBy": null,
+    "creationSource": "WEBAPP",
+    "user": {
+      "uuid": "9ec5e2f1-3198-4ed2-8c53-6c4afaf72f57",
+      "email": null,
+      "name": "Record Abebe",
+      "timeZone": "Africa/Addis_Ababa",
+      "username": "recrord-abebe-lsvu3a",
+      "isPlatformManaged": false
+    },
+    "attendees": [
+      {
+        "id": 5,
+        "email": "alex.morgan@example.com",
+        "name": "Alex Morgan",
+        "timeZone": "Africa/Addis_Ababa",
+        "phoneNumber": null,
+        "locale": "en",
+        "bookingId": 5,
+        "noShow": false
+      }
+    ],
+    "payment": [],
+    "references": [
+      {
+        "type": "daily_video",
+        "uid": ""
+      }
+    ],
+    "userUuid": "9ec5e2f1-3198-4ed2-8c53-6c4afaf72f57",
+    "paymentRequired": false,
+    "luckyUsers": [],
+    "isDryRun": false,
+    "organizationId": null,
+    "previousBooking": null
+  }
+}

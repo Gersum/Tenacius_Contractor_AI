@@ -1,0 +1,7 @@
+{
+  "channel": "email",
+  "sender": "alex.morgan@example.com",
+  "recipient": "sales@tenacious.example",
+  "body": "This is interesting. We may need Python and data engineering support soon. If you have a couple of times next week, text them to me and we can confirm there.",
+  "received_at": "2026-04-25T17:22:13.968421+00:00"
+}

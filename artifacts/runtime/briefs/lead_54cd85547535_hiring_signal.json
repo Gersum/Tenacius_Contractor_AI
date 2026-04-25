@@ -1,0 +1,244 @@
+{
+  "company_name": "Vercel",
+  "crunchbase_ref": "https://www.crunchbase.com/organization/vercel",
+  "segment_recommendation": "unknown",
+  "segment_confidence": "medium",
+  "funding_signal": {
+    "name": "recent_funding",
+    "value": "Public Crunchbase and funding search pages did not expose accessible funding detail.",
+    "confidence": "low",
+    "evidence": [
+      "Attempted to collect from https://www.crunchbase.com/organization/vercel.",
+      "Crunchbase was blocked or inaccessible and no public search result produced a funding sentence."
+    ],
+    "source_refs": [
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T17:12:44.386809+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "job_post_signal": {
+    "name": "job_post_velocity",
+    "value": "Public careers/search pages were checked, but no explicit open role cards were visible.",
+    "confidence": "low",
+    "evidence": [
+      "Collected 0 accessible public careers-related page(s).",
+      "The homepage was blocked, so the collector continued through standard careers paths and public search."
+    ],
+    "source_refs": [
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T17:12:52.992916+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:54.568551+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/jobs",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:54.842023+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/join-us",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:55.103673+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/openings",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:55.509728+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/company/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:55.793079+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "layoff_signal": {
+    "name": "layoffs",
+    "value": "no layoffs.csv match found for Vercel",
+    "confidence": "medium",
+    "evidence": [
+      "Searched the configured layoffs.csv snapshot by normalized company name and found no exact match."
+    ],
+    "source_refs": [
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T17:12:58.227665+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "leadership_change_signal": {
+    "name": "leadership_change",
+    "value": "Public news/search pages were checked, but no explicit leadership change was visible.",
+    "confidence": "low",
+    "evidence": [
+      "Collected 0 accessible public news or press page(s).",
+      "No leadership appointment, promotion, resignation, or transition language was visible."
+    ],
+    "source_refs": [
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T17:12:55.793126+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:56.831310+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:57.091419+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/blog",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:57.353945+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:57.648035+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:57.953217+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/about/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T17:12:58.227437+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "ai_maturity_score": 0,
+  "bench_match_summary": "Bench match is guided by public signals from layoffs.",
+  "ai_maturity_reasoning": [
+    "Crunchbase funding confidence: low.",
+    "Public job-post confidence: low.",
+    "Leadership-change confidence: low.",
+    "Layoff confidence: medium."
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase public organization page",
+      "url": "https://www.crunchbase.com/organization/vercel",
+      "note": "Public Crunchbase page collected without login or captcha bypass.",
+      "accessed_at": "2026-04-25T17:12:44.386809+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+      "accessed_at": "2026-04-25T17:12:52.992916+00:00"
+    },
+    {
+      "title": "Public careers page",
+      "url": "https://vercel.com/careers",
+      "note": "Rendered public job page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:54.568551+00:00"
+    },
+    {
+      "title": "Public careers page",
+      "url": "https://vercel.com/jobs",
+      "note": "Rendered public job page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:54.842023+00:00"
+    },
+    {
+      "title": "Public careers page",
+      "url": "https://vercel.com/join-us",
+      "note": "Rendered public job page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:55.103673+00:00"
+    },
+    {
+      "title": "Public careers page",
+      "url": "https://vercel.com/openings",
+      "note": "Rendered public job page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:55.509728+00:00"
+    },
+    {
+      "title": "Public careers page",
+      "url": "https://vercel.com/company/careers",
+      "note": "Rendered public job page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:55.793079+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+      "accessed_at": "2026-04-25T17:12:55.793126+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/news",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:56.831310+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/press",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:57.091419+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/blog",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:57.353945+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/company/news",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:57.648035+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/company/press",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:57.953217+00:00"
+    },
+    {
+      "title": "Public leadership/news page",
+      "url": "https://vercel.com/about/news",
+      "note": "Rendered public news page discovered from the company website or public search.",
+      "accessed_at": "2026-04-25T17:12:58.227437+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-25T17:12:58.227665+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T17:12:58.266313+00:00"
+}

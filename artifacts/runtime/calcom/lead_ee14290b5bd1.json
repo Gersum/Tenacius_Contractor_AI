@@ -1,0 +1,21 @@
+{
+  "booking": {
+    "booking_id": "booking_failed_lead_ee14290b5bd1",
+    "event_type_slug": "30min",
+    "attendee_email": "alex.morgan4@example.com",
+    "host_email": "delivery-lead@example.com",
+    "scheduled_for": "2026-04-28T12:00:00Z",
+    "booking_url": "http://127.0.0.1:3004/bookings/lead_ee14290b5bd1",
+    "preview_ref": "artifacts/runtime/calcom/lead_ee14290b5bd1.json",
+    "provider": "cal.com",
+    "mode": "error",
+    "status": "failed",
+    "host_username": "recrord-abebe-lsvu3a",
+    "raw_response_ref": null,
+    "error_message": "Cal.com booking request failed with HTTP 409: {\"message\":\"no_available_users_found_error\",\"data\":{\"traceId\":\"trace_jIC_TbLTLGN5xYUAZPEgs\"}}",
+    "created_at": "2026-04-25T18:06:40.189427+00:00"
+  },
+  "metadata": {
+    "failure_mode": "live_request_failed"
+  }
+}

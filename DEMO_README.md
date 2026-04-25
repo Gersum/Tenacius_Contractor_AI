@@ -2,6 +2,10 @@
 
 This guide is for demonstrating the local Week 10 build end to end from the browser operator console.
 
+If you are recording the formal no-login video deliverable, start with:
+
+- [docs/demo_video_script.md](/Users/gersumasfaw/Downloads/week_10/docs/demo_video_script.md)
+
 The goal of the demo is to show, in one flow, that the system can:
 
 - run enrichment for a synthetic lead

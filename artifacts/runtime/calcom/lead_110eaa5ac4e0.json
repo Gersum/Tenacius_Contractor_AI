@@ -1,0 +1,21 @@
+{
+  "booking": {
+    "booking_id": "booking_lead_110eaa5ac4e0",
+    "event_type_slug": "discovery-call",
+    "attendee_email": "alex.morgan.livefix2@example.com",
+    "host_email": "delivery-lead@example.com",
+    "scheduled_for": "2026-04-24T11:00:00Z",
+    "booking_url": "http://127.0.0.1:3001/bookings/discovery-call?lead=lead_110eaa5ac4e0",
+    "preview_ref": "artifacts/runtime/calcom/lead_110eaa5ac4e0.json",
+    "provider": "cal.com",
+    "mode": "fallback",
+    "status": "simulated",
+    "host_username": null,
+    "raw_response_ref": null,
+    "error_message": "CALCOM_API_KEY not configured",
+    "created_at": "2026-04-25T18:10:19.555315+00:00"
+  },
+  "metadata": {
+    "fallback_reason": "CALCOM_API_KEY not configured"
+  }
+}

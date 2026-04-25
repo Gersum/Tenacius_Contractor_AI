@@ -1,0 +1,10 @@
+{
+  "delivery_id": "sms_lead_1e1da50cd842",
+  "to_number": "+251911000000",
+  "provider": "africas_talking_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Hi Alex Morgan, confirming your Tenacious discovery call for 2026-04-24T11:00:00Z. Booking link: http://127.0.0.1:3004/bookings/tenacious-discovery?lead=lead_1e1da50cd842",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/sms/lead_1e1da50cd842_scheduling.json",
+  "sent_at": "2026-04-25T18:56:17.475929+00:00"
+}

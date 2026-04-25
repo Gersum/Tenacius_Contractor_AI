@@ -51,6 +51,18 @@ def _env_bool(name: str, default: bool) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _env_int(name: str, default: int | None = None) -> int | None:
+    raw = os.getenv(name)
+    if raw is None:
+        raw = _read_dotenv().get(name)
+    if raw is None or not raw.strip():
+        return default
+    try:
+        return int(raw.strip())
+    except ValueError:
+        return default
+
+
 @dataclass(frozen=True)
 class Settings:
     """Application settings with safe outbound defaults."""
@@ -78,6 +90,7 @@ class Settings:
     calcom_api_base_url: str = "http://127.0.0.1:3003"
     calcom_api_key: str = ""
     calcom_event_type_slug: str = ""
+    calcom_event_type_id: int | None = None
     calcom_api_version: str = "2026-02-25"
     calcom_username: str = ""
     calcom_webhook_secret: str = ""
@@ -155,6 +168,7 @@ def get_settings() -> Settings:
         ),
         calcom_api_key=_env_get("CALCOM_API_KEY", ""),
         calcom_event_type_slug=_env_get("CALCOM_EVENT_TYPE_SLUG", ""),
+        calcom_event_type_id=_env_int("CALCOM_EVENT_TYPE_ID", None),
         calcom_api_version=_env_get_nonempty("CALCOM_API_VERSION", "2026-02-25"),
         calcom_username=_env_get("CALCOM_USERNAME", ""),
         calcom_webhook_secret=_env_get("CALCOM_WEBHOOK_SECRET", ""),

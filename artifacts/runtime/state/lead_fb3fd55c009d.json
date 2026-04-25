@@ -1,0 +1,27 @@
+{
+  "lead": {
+    "company_name": "Orrin Labs Inc.",
+    "domain": "orrin-labs.example",
+    "synthetic_contact_name": "Elena Park",
+    "synthetic_contact_email": "elena@orrin-labs.example",
+    "synthetic_contact_phone": "+251911000000",
+    "source_type": "synthetic",
+    "icp_segment": "unknown",
+    "icp_confidence": "medium",
+    "status": "booked",
+    "created_at": "2026-04-25T17:45:26.044328+00:00",
+    "updated_at": "2026-04-25T17:45:26.044336+00:00",
+    "lead_id": "lead_fb3fd55c009d"
+  },
+  "conversation": {
+    "lead_id": "lead_fb3fd55c009d",
+    "channel": "email",
+    "stage": "booked",
+    "turn_count": 1,
+    "qualification_status": "qualified",
+    "booking_status": "booked",
+    "human_handoff_required": false,
+    "last_message_at": "2026-04-25T17:45:36.256841+00:00",
+    "conversation_id": "conv_e32e6c0227d3"
+  }
+}

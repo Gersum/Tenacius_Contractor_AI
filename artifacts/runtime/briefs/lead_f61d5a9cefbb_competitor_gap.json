@@ -1,0 +1,53 @@
+{
+  "company_name": "Orrin Labs Inc.",
+  "sector": "Live public-web classification",
+  "peer_group_definition": "Live mode uses the prospect's public funding, careers, layoffs, and leadership signals. No attached sample competitor names are injected unless USE_SEEDED_DEMO_DATA=true.",
+  "prospect_position_summary": "Orrin Labs Inc. is classified as unknown with medium confidence from live public evidence.",
+  "recommended_hook": "Funding confidence is low; layoff confidence is medium; AI maturity score is 0/3.",
+  "confidence": "medium",
+  "top_quartile_companies": [],
+  "gap_findings": [
+    {
+      "title": "Hiring velocity compared with delivery capacity",
+      "description": "Orrin Labs Inc.'s current public hiring signal is: Live job-post collection was skipped for synthetic domain orrin-labs.example.",
+      "confidence": "low"
+    },
+    {
+      "title": "Leadership or operating-change signal",
+      "description": "Orrin Labs Inc.'s public leadership signal is: Live leadership-change collection was skipped for synthetic domain orrin-labs.example.",
+      "confidence": "low"
+    },
+    {
+      "title": "Funding, layoff, and AI maturity pressure",
+      "description": "Funding confidence is low; layoff confidence is medium; AI maturity score is 0/3.",
+      "confidence": "medium"
+    }
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase public organization page",
+      "url": "https://www.crunchbase.com/organization/orrin-labs",
+      "note": "Public Crunchbase page collected without login or captcha bypass.",
+      "accessed_at": "2026-04-25T17:44:53.196655+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://orrin-labs.example",
+      "note": "Public company page used to discover careers and jobs links.",
+      "accessed_at": "2026-04-25T17:44:53.196685+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://orrin-labs.example",
+      "note": "Public company page used to discover press, news, and leadership pages.",
+      "accessed_at": "2026-04-25T17:44:53.196688+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-25T17:44:53.196911+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T17:44:53.230008+00:00"
+}

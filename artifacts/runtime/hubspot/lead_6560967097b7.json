@@ -1,0 +1,84 @@
+{
+  "record_id": "hs_lead_6560967097b7",
+  "status": "upserted",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/hubspot/lead_6560967097b7.json",
+  "fields": {
+    "company_name": "Orrin Labs Inc.",
+    "contact_email": "elena@orrin-labs.example",
+    "icp_segment": "unknown",
+    "icp_confidence": "medium",
+    "enrichment_timestamp": "2026-04-25T18:13:31.403729+00:00",
+    "conversation_stage": "booked",
+    "qualification_status": "qualified",
+    "booking_url": "http://127.0.0.1:3004/bookings/tenacious-discovery?lead=lead_6560967097b7",
+    "ai_maturity_score": 0,
+    "ai_maturity_reasoning": [
+      "Crunchbase funding confidence: low.",
+      "Public job-post confidence: low.",
+      "Leadership-change confidence: low.",
+      "Layoff confidence: medium."
+    ],
+    "funding_signal": "Live Crunchbase collection was skipped for synthetic domain orrin-labs.example.",
+    "funding_confidence": "low",
+    "job_post_signal": "Live job-post collection was skipped for synthetic domain orrin-labs.example.",
+    "job_post_confidence": "low",
+    "layoff_signal": "no layoffs.csv match found for Orrin Labs Inc.",
+    "layoff_confidence": "medium",
+    "leadership_change_signal": "Live leadership-change collection was skipped for synthetic domain orrin-labs.example.",
+    "leadership_change_confidence": "low",
+    "bench_match_summary": "Bench match is guided by public signals from layoffs.",
+    "competitor_gap_position": "Orrin Labs Inc. is classified as unknown with medium confidence from live public evidence.",
+    "recommended_hook": "Funding confidence is low; layoff confidence is medium; AI maturity score is 0/3.",
+    "source_refs": [
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/orrin-labs",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T18:13:25.749728+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://orrin-labs.example",
+        "note": "Public company page used to discover careers and jobs links.",
+        "accessed_at": "2026-04-25T18:13:25.749743+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://orrin-labs.example",
+        "note": "Public company page used to discover press, news, and leadership pages.",
+        "accessed_at": "2026-04-25T18:13:25.749746+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T18:13:25.749762+00:00"
+      },
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/orrin-labs",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T18:13:25.749728+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://orrin-labs.example",
+        "note": "Public company page used to discover careers and jobs links.",
+        "accessed_at": "2026-04-25T18:13:25.749743+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://orrin-labs.example",
+        "note": "Public company page used to discover press, news, and leadership pages.",
+        "accessed_at": "2026-04-25T18:13:25.749746+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T18:13:25.749762+00:00"
+      }
+    ]
+  },
+  "synced_at": "2026-04-25T18:13:31.403761+00:00"
+}

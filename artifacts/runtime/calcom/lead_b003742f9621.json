@@ -1,0 +1,21 @@
+{
+  "booking": {
+    "booking_id": "booking_lead_b003742f9621",
+    "event_type_slug": "tenacious-discovery",
+    "attendee_email": "alex.morgan@example.com",
+    "host_email": "delivery-lead@example.com",
+    "scheduled_for": "2026-04-24T11:00:00Z",
+    "booking_url": "http://127.0.0.1:3004/bookings/tenacious-discovery?lead=lead_b003742f9621",
+    "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/calcom/lead_b003742f9621.json",
+    "provider": "cal.com",
+    "mode": "fallback",
+    "status": "simulated",
+    "host_username": "recrord-abebe-lsvu3a",
+    "raw_response_ref": null,
+    "error_message": "Cal.com booking request failed: [Errno 61] Connection refused",
+    "created_at": "2026-04-25T19:37:17.575552+00:00"
+  },
+  "metadata": {
+    "fallback_reason": "Cal.com booking request failed: [Errno 61] Connection refused"
+  }
+}

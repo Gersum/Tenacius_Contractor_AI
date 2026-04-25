@@ -54,6 +54,7 @@ class ConversionEnginePipeline:
             api_base_url=settings.calcom_api_base_url,
             api_key=settings.calcom_api_key,
             event_type_slug=settings.calcom_event_type_slug or "tenacious-discovery",
+            event_type_id=settings.calcom_event_type_id,
             api_version=settings.calcom_api_version,
             host_username=settings.calcom_username,
             default_start=settings.calcom_booking_start,
