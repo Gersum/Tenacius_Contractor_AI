@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-04-25T06:25:53Z",
+  "claims": [
+    {
+      "claim_id": "tau2_dev_pass_at_1",
+      "claim": "tau2 retail dev baseline pass@1 is 0.7267 with 95% CI [0.6504, 0.7917].",
+      "value": 0.7267,
+      "source_refs": [
+        "eval/score_log.json:dev_baseline",
+        "eval/trace_log.jsonl"
+      ],
+      "recompute_rule": "mean(reward) across all completed dev trajectories"
+    },
+    {
+      "claim_id": "tamsg_pass_at_1",
+      "claim": "TAMSG method pass@1 on sealed held-out is 0.8910.",
+      "value": 0.8910,
+      "source_refs": [
+        "ablation_results.json:tamsg_method",
+        "held_out_traces.jsonl"
+      ]
+    },
+    {
+      "claim_id": "delta_a_significance",
+      "claim": "Delta A improvement is 16.4% with p-value 0.0382.",
+      "value": 0.1643,
+      "source_refs": [
+        "method.md",
+        "ablation_results.json"
+      ]
+    },
+    {
+      "claim_id": "acv_floor",
+      "claim": "Revised talent-outsourcing ACV floor of $[ACV_MIN].",
+      "value": "[ACV_MIN]",
+      "source_refs": [
+        "data/tenacious_sales_data/seed/baseline_numbers.md"
+      ]
+    },
+    {
+      "claim_id": "stalled_deal_rate",
+      "claim": "Stalled-deal rate (middle-to-late stages) is ~72%.",
+      "value": 0.72,
+      "source_refs": [
+        "data/tenacious_sales_data/seed/baseline_numbers.md"
+      ]
+    },
+    {
+      "claim_id": "tau2_dev_cost",
+      "claim": "Average tau2 dev baseline agent cost is $0.0199 per simulation.",
+      "value": 0.0199,
+      "source_refs": [
+        "eval/score_log.json:dev_baseline",
+        "eval/trace_log.jsonl"
+      ],
+      "recompute_rule": "mean(agent_cost) across all completed dev trajectories"
+    },
+    {
+      "claim_id": "tau2_dev_latency_p50",
+      "claim": "tau2 dev baseline p50 latency is 105.9521 seconds.",
+      "value": 105.9521,
+      "source_refs": [
+        "eval/score_log.json:dev_baseline",
+        "eval/trace_log.jsonl"
+      ],
+      "recompute_rule": "median(duration) across all completed dev trajectories"
+    },
+    {
+      "claim_id": "tau2_dev_latency_p95",
+      "claim": "tau2 dev baseline p95 latency is 551.6491 seconds.",
+      "value": 551.6491,
+      "source_refs": [
+        "eval/score_log.json:dev_baseline",
+        "eval/trace_log.jsonl"
+      ],
+      "recompute_rule": "95th percentile duration across all completed dev trajectories"
+    },
+    {
+      "claim_id": "runtime_current_lead",
+      "claim": "The latest production-stack visualization run is anchored by lead_1156d1881a97.",
+      "value": "lead_1156d1881a97",
+      "source_refs": [
+        "artifacts/runtime/current-run.json",
+        "artifacts/traces/agent_trace_log.jsonl"
+      ],
+      "recompute_rule": "read lead_id from artifacts/runtime/current-run.json"
+    }
+  ]
+}
