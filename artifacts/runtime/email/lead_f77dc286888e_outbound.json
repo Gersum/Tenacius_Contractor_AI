@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_f77dc286888e",
+  "to_address": "elena@orrin-labs.example",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Hi Elena Park,\n\nThe public signals are strong enough to say Orrin Labs Inc. may be entering a period where delivery demand rises faster than hiring can absorb. We saw Series B funding closed 2026-02-12 for $14,000,000, and the public hiring picture suggests there may be some growth pressure.\n\nLead with the dedicated AI leadership gap (high confidence, two strong peer examples). Frame as a question \u2014 'is the AI leadership role still being scoped, or is it deliberately distributed across the CTO remit?' \u2014 not an assertion of a gap. Avoid the MLOps gap in the first email; it is medium confidence and the prospect may have the function inside their Data Platform Engineer JD. We can explore likely fit for Python and data engineering support, but detailed staffing commitments should stay with a human Tenacious delivery lead until live bench data is connected.\n\nIf that is directionally true, I can share a short point of view or line up a 30-minute discovery call.\n",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_f77dc286888e_outbound.json",
+  "subject": "Orrin Labs Inc. delivery capacity and hiring pressure",
+  "sent_at": "2026-04-25T06:18:20.808717+00:00"
+}

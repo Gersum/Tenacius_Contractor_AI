@@ -1,0 +1,6 @@
+# Core optional integrations for the Tenacious conversion engine.
+# The local demo can run on the standard library alone, but these packages
+# enable the challenge-aligned integrations when credentials are available.
+
+langfuse>=3.0.0
+playwright>=1.52.0

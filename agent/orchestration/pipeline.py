@@ -8,6 +8,7 @@ from agent.channels.sms.handler import SmsHandler
 from agent.config import Settings
 from agent.crm.hubspot_mcp import HubSpotMCPClient
 from agent.enrichment.pipeline import EnrichmentPipeline
+from agent.materials.tenacious import TenaciousSalesMaterials
 from agent.models.schemas import (
     Channel,
     ConfidenceLevel,
@@ -18,6 +19,7 @@ from agent.models.schemas import (
     PipelineResult,
     QualificationDecision,
     TraceRecord,
+    utc_now,
 )
 from agent.policies.channel_handoff import should_switch_to_sms
 from agent.policies.grounding import GroundingPolicy
@@ -32,6 +34,7 @@ class ConversionEnginePipeline:
         self.settings = settings
         self.trace_logger = trace_logger
         self.enrichment_pipeline = EnrichmentPipeline(settings=settings)
+        self.materials = TenaciousSalesMaterials(settings.project_root)
         self.grounding_policy = GroundingPolicy(settings=settings)
         self.email_handler = EmailHandler(
             runtime_dir=settings.runtime_artifacts_dir,
@@ -46,7 +49,16 @@ class ConversionEnginePipeline:
         self.hubspot_client = HubSpotMCPClient(settings.runtime_artifacts_dir)
         self.calcom_client = CalComBookingClient(
             runtime_dir=settings.runtime_artifacts_dir,
+            base_url=settings.calcom_base_url,
+            app_base_url=settings.calcom_app_base_url,
+            api_base_url=settings.calcom_api_base_url,
+            api_key=settings.calcom_api_key,
             event_type_slug=settings.calcom_event_type_slug or "tenacious-discovery",
+            api_version=settings.calcom_api_version,
+            host_username=settings.calcom_username,
+            default_start=settings.calcom_booking_start,
+            fallback_enabled=settings.calcom_fallback_enabled,
+            webhook_secret=settings.calcom_webhook_secret,
         )
         self.state_store = FileStateStore(settings.runtime_artifacts_dir, settings.project_root)
 
@@ -147,6 +159,25 @@ class ConversionEnginePipeline:
         conversation.stage = LeadStatus.BOOKED
         lead.status = LeadStatus.BOOKED
 
+        discovery_context = self._timed_step(
+            lead=lead,
+            step_name="write_discovery_context_brief",
+            trace_ids=trace_ids,
+            conversation=conversation,
+            fn=lambda record: self.state_store.save_discovery_context(
+                record,
+                self.materials.render_discovery_context_brief(
+                    lead=record,
+                    conversation=conversation,
+                    hiring_signal_brief=hiring_signal_brief,
+                    competitor_gap_brief=competitor_gap_brief,
+                    booking=calendar_booking,
+                    qualification=qualification,
+                    inbound_reply=inbound_reply,
+                ),
+            ),
+        )
+
         sms_delivery = None
         if should_switch_to_sms(inbound_reply):
             sms_delivery = self._timed_step(
@@ -200,11 +231,13 @@ class ConversionEnginePipeline:
                     "sms_confirmation": sms_delivery.preview_ref if sms_delivery else None,
                     "hubspot": hubspot_sync.preview_ref,
                     "calcom": calendar_booking.preview_ref,
+                    "discovery_context": discovery_context,
                     "hiring_signal": brief_paths["hiring_signal"],
                     "competitor_gap": brief_paths["competitor_gap"],
                     "agent_traces": self.settings.resolved_trace_output_path,
                     "eval_score_log": self.settings.project_root / "eval" / "score_log.json",
                     "eval_trace_log": self.settings.project_root / "eval" / "trace_log.jsonl",
+                    "evidence_graph": self.settings.project_root / "evidence_graph.json",
                 },
             ),
         )
@@ -232,28 +265,96 @@ class ConversionEnginePipeline:
         fn,
         conversation: ConversationState | None = None,
     ):
-        started = perf_counter()
-        result = fn(lead)
-        latency_ms = int((perf_counter() - started) * 1000)
-        trace = TraceRecord(
+        started_at = utc_now()
+        started_counter = perf_counter()
+        try:
+            result = fn(lead)
+        except Exception as exc:
+            finished_at = utc_now()
+            trace = self._build_trace_record(
+                lead=lead,
+                step_name=step_name,
+                conversation=conversation,
+                started_at=started_at,
+                finished_at=finished_at,
+                latency_ms=int((perf_counter() - started_counter) * 1000),
+                status="error",
+                result=None,
+                error=exc,
+            )
+            trace_ids.append(self.trace_logger.log(trace))
+            raise
+
+        finished_at = utc_now()
+        trace = self._build_trace_record(
+            lead=lead,
+            step_name=step_name,
+            conversation=conversation,
+            started_at=started_at,
+            finished_at=finished_at,
+            latency_ms=int((perf_counter() - started_counter) * 1000),
+            status="ok",
+            result=result,
+            error=None,
+        )
+        trace_ids.append(self.trace_logger.log(trace))
+        return result
+
+    def _build_trace_record(
+        self,
+        lead: LeadRecord,
+        step_name: str,
+        conversation: ConversationState | None,
+        started_at,
+        finished_at,
+        latency_ms: int,
+        status: str,
+        result,
+        error: Exception | None,
+    ) -> TraceRecord:
+        output_ref = self._output_ref_for_result(result)
+        metadata = {
+            "status_after_step": lead.status.value,
+            "conversation_stage": conversation.stage.value if conversation else None,
+            "generation_provider": getattr(result, "generation_provider", None),
+            "generation_mode": getattr(result, "generation_mode", None),
+            "generation_error": getattr(result, "generation_error", None),
+            "result_type": type(result).__name__ if result is not None else None,
+        }
+        if output_ref:
+            metadata["output_ref"] = output_ref
+        if error is not None:
+            metadata["error_type"] = type(error).__name__
+            metadata["error_message"] = str(error)
+
+        return TraceRecord(
             lead_id=lead.lead_id,
             conversation_id=conversation.conversation_id if conversation else None,
             step_name=step_name,
+            started_at=started_at,
+            finished_at=finished_at,
             latency_ms=latency_ms,
             model_name=getattr(result, "generation_model", None),
             prompt_version=getattr(result, "prompt_version", None),
             cost_usd=float(getattr(result, "generation_cost_usd", 0.0) or 0.0),
+            outputs_ref=output_ref,
             source_refs=[lead.domain],
-            metadata={
-                "status_after_step": lead.status.value,
-                "conversation_stage": conversation.stage.value if conversation else None,
-                "generation_provider": getattr(result, "generation_provider", None),
-                "generation_mode": getattr(result, "generation_mode", None),
-                "generation_error": getattr(result, "generation_error", None),
-            },
+            status=status,
+            metadata=metadata,
         )
-        trace_ids.append(self.trace_logger.log(trace))
-        return result
+
+    def _output_ref_for_result(self, result) -> str | None:
+        if result is None:
+            return None
+        preview_ref = getattr(result, "preview_ref", None)
+        if preview_ref:
+            return str(preview_ref)
+        if isinstance(result, str):
+            return result
+        if isinstance(result, dict):
+            refs = [str(value) for value in result.values() if value]
+            return ", ".join(refs) if refs else None
+        return None
 
     def _initialize_conversation(self, lead: LeadRecord) -> ConversationState:
         return ConversationState(

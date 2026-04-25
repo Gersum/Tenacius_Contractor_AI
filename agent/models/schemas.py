@@ -235,7 +235,24 @@ class CalendarBooking:
     scheduled_for: str
     booking_url: str
     preview_ref: str
+    provider: str = "cal.com"
+    mode: str = "stub"
+    status: str = "confirmed"
+    host_username: str | None = None
+    raw_response_ref: str | None = None
+    error_message: str | None = None
     created_at: datetime = field(default_factory=utc_now)
+
+
+@dataclass
+class CalendarWebhookEvent:
+    provider: str
+    event_type: str
+    status: str
+    booking_id: str | None = None
+    payload_ref: str | None = None
+    error_message: str | None = None
+    received_at: datetime = field(default_factory=utc_now)
 
 
 @dataclass

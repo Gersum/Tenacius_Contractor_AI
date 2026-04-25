@@ -1,0 +1,45 @@
+{
+  "company_name": "Orrin Labs Inc.",
+  "sector": "Business Intelligence / Analytics",
+  "peer_group_definition": "AI-augmented BI for mid-market against a top-quartile benchmark of 2.75",
+  "prospect_position_summary": "The prospect matches the sample's AI-augmented BI profile and sits below the top-quartile benchmark.",
+  "recommended_hook": "Lead with the dedicated AI leadership gap (high confidence, two strong peer examples). Frame as a question \u2014 'is the AI leadership role still being scoped, or is it deliberately distributed across the CTO remit?' \u2014 not an assertion of a gap. Avoid the MLOps gap in the first email; it is medium confidence and the prospect may have the function inside their Data Platform Engineer JD.",
+  "confidence": "high",
+  "top_quartile_companies": [
+    "Northview Analytics",
+    "Axiom Data Works",
+    "Pulsar Insights"
+  ],
+  "gap_findings": [
+    {
+      "title": "Dedicated AI/ML leadership role at the executive level",
+      "description": "Orrin Labs has no named AI/ML leadership role. CTO holds a combined infrastructure-and-data remit per the public team page.",
+      "confidence": "high"
+    },
+    {
+      "title": "Dedicated MLOps / ML-platform engineering function (roles open 45+ days suggests active buildout)",
+      "description": "Orrin Labs has Data Platform Engineer roles open but no explicitly MLOps-labeled roles. The distinction may be deliberate (integrated in data-platform role) or a gap.",
+      "confidence": "medium"
+    },
+    {
+      "title": "Public technical commentary on agentic or evaluation-framework work",
+      "description": "Orrin Labs blog mentions AI as a priority but has no technical depth posts on agentic workflows or evaluation in the last 12 months.",
+      "confidence": "medium"
+    }
+  ],
+  "source_refs": [
+    {
+      "title": "Seed hiring signal brief",
+      "url": "file:///Users/gersumasfaw/Downloads/week_10/data/tenacious_sales_data/schemas/sample_hiring_signal_brief.json",
+      "note": "Attached sample brief.",
+      "accessed_at": "2026-04-25T06:25:53.387227+00:00"
+    },
+    {
+      "title": "Seed competitor gap brief",
+      "url": "file:///Users/gersumasfaw/Downloads/week_10/data/tenacious_sales_data/schemas/sample_competitor_gap_brief.json",
+      "note": "Attached sample brief.",
+      "accessed_at": "2026-04-25T06:25:53.387237+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T06:25:53.387265+00:00"
+}

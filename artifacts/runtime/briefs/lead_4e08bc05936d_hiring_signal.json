@@ -1,0 +1,112 @@
+{
+  "company_name": "Vercel",
+  "crunchbase_ref": "https://www.crunchbase.com/organization/vercel",
+  "segment_recommendation": "unknown",
+  "segment_confidence": "medium",
+  "funding_signal": {
+    "name": "recent_funding",
+    "value": "Public Crunchbase and funding search pages did not expose accessible funding detail.",
+    "confidence": "low",
+    "evidence": [
+      "Attempted to collect from https://www.crunchbase.com/organization/vercel.",
+      "Crunchbase was blocked or inaccessible and no public search result produced a funding sentence."
+    ],
+    "source_refs": [
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T11:12:56.788630+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "job_post_signal": {
+    "name": "job_post_velocity",
+    "value": "Public company homepage appears blocked or inaccessible without login.",
+    "confidence": "low",
+    "evidence": [
+      "Attempted to collect from https://vercel.com.",
+      "The rendered page contained a login, captcha, or anti-bot block and was not bypassed."
+    ],
+    "source_refs": [
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover careers and jobs links.",
+        "accessed_at": "2026-04-25T11:12:58.793732+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "layoff_signal": {
+    "name": "layoffs",
+    "value": "no layoffs.csv match found for Vercel",
+    "confidence": "medium",
+    "evidence": [
+      "Searched the configured layoffs.csv snapshot by normalized company name and found no exact match."
+    ],
+    "source_refs": [
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T11:13:01.810738+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "leadership_change_signal": {
+    "name": "leadership_change",
+    "value": "Public company homepage appears blocked or inaccessible without login.",
+    "confidence": "low",
+    "evidence": [
+      "Attempted to collect from https://vercel.com.",
+      "The rendered page contained a login, captcha, or anti-bot block and was not bypassed."
+    ],
+    "source_refs": [
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover press, news, and leadership pages.",
+        "accessed_at": "2026-04-25T11:13:00.729528+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "ai_maturity_score": 0,
+  "bench_match_summary": "Bench match is guided by public signals from layoffs.",
+  "ai_maturity_reasoning": [
+    "Crunchbase funding confidence: low.",
+    "Public job-post confidence: low.",
+    "Leadership-change confidence: low.",
+    "Layoff confidence: medium."
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase public organization page",
+      "url": "https://www.crunchbase.com/organization/vercel",
+      "note": "Public Crunchbase page collected without login or captcha bypass.",
+      "accessed_at": "2026-04-25T11:12:56.788630+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Public company page used to discover careers and jobs links.",
+      "accessed_at": "2026-04-25T11:12:58.793732+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Public company page used to discover press, news, and leadership pages.",
+      "accessed_at": "2026-04-25T11:13:00.729528+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-25T11:13:01.810738+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T11:13:01.866668+00:00"
+}

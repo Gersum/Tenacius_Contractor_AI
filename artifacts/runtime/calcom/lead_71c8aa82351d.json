@@ -1,0 +1,10 @@
+{
+  "booking_id": "booking_lead_71c8aa82351d",
+  "event_type_slug": "tenacious-discovery",
+  "attendee_email": "elena@orrin-labs.example",
+  "host_email": "delivery-lead@example.com",
+  "scheduled_for": "2026-04-24T14:00:00+03:00",
+  "booking_url": "https://cal.example/tenacious-discovery/lead_71c8aa82351d",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/calcom/lead_71c8aa82351d.json",
+  "created_at": "2026-04-25T06:19:23.640704+00:00"
+}

@@ -1,0 +1,10 @@
+{
+  "delivery_id": "sms_lead_57fa0007d4ef",
+  "to_number": "+251911000000",
+  "provider": "africas_talking_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Hi Elena Park, confirming your Tenacious discovery call for 2026-04-24T11:00:00Z. Booking link: http://127.0.0.1:3000/bookings/tenacious-discovery?lead=lead_57fa0007d4ef",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/sms/lead_57fa0007d4ef_scheduling.json",
+  "sent_at": "2026-04-25T07:52:21.548753+00:00"
+}

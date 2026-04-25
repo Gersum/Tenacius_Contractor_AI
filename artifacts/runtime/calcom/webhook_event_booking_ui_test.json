@@ -1,0 +1,9 @@
+{
+  "provider": "cal.com",
+  "event_type": "BOOKING_CREATED",
+  "status": "booked",
+  "booking_id": "booking_ui_test",
+  "payload_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/calcom/webhook_booking_ui_test.json",
+  "error_message": null,
+  "received_at": "2026-04-25T07:51:43.690729+00:00"
+}

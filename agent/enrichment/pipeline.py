@@ -3,6 +3,7 @@ from __future__ import annotations
 from agent.config import Settings
 from agent.enrichment.layoffs import LayoffsLookup
 from agent.enrichment.public_signals import PublicSignalCollector
+from agent.materials.tenacious import TenaciousSalesMaterials
 from agent.models.schemas import (
     CompetitorGapBrief,
     ConfidenceLevel,
@@ -24,8 +25,13 @@ class EnrichmentPipeline:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self.layoffs_lookup = LayoffsLookup(settings.layoffs_csv_path)
+        self.materials = TenaciousSalesMaterials(settings.project_root)
 
     def build_hiring_signal_brief(self, lead: LeadRecord) -> HiringSignalBrief:
+        if self.settings.use_seeded_demo_data and self.materials.has_seed_for(lead):
+            layoff_signal = self.layoffs_lookup.build_signal(lead.company_name)
+            return self.materials.build_seed_hiring_signal_brief(lead, layoff_signal=layoff_signal)
+
         public_signals = PublicSignalCollector(company_name=lead.company_name, domain=lead.domain)
         funding_signal, job_post_signal, leadership_change_signal = public_signals.collect_all()
         layoff_signal = self.layoffs_lookup.build_signal(lead.company_name)
@@ -78,25 +84,61 @@ class EnrichmentPipeline:
     def build_competitor_gap_brief(
         self, lead: LeadRecord, hiring_signal_brief: HiringSignalBrief
     ) -> CompetitorGapBrief:
+        if self.settings.use_seeded_demo_data and self.materials.has_seed_for(lead):
+            return self.materials.build_seed_competitor_gap_brief(lead)
+        return self._build_live_competitor_gap_brief(lead, hiring_signal_brief)
+
+    def _build_live_competitor_gap_brief(
+        self,
+        lead: LeadRecord,
+        hiring_signal_brief: HiringSignalBrief,
+    ) -> CompetitorGapBrief:
+        gap_findings = [
+            GapFinding(
+                title="Hiring velocity compared with delivery capacity",
+                description=(
+                    f"{lead.company_name}'s current public hiring signal is: "
+                    f"{hiring_signal_brief.job_post_signal.value}"
+                ),
+                confidence=hiring_signal_brief.job_post_signal.confidence,
+            ),
+            GapFinding(
+                title="Leadership or operating-change signal",
+                description=(
+                    f"{lead.company_name}'s public leadership signal is: "
+                    f"{hiring_signal_brief.leadership_change_signal.value}"
+                ),
+                confidence=hiring_signal_brief.leadership_change_signal.confidence,
+            ),
+            GapFinding(
+                title="Funding, layoff, and AI maturity pressure",
+                description=(
+                    f"Funding confidence is {hiring_signal_brief.funding_signal.confidence.value}; "
+                    f"layoff confidence is {hiring_signal_brief.layoff_signal.confidence.value}; "
+                    f"AI maturity score is {hiring_signal_brief.ai_maturity_score}/3."
+                ),
+                confidence=hiring_signal_brief.segment_confidence,
+            ),
+        ]
+        strongest = max(
+            gap_findings,
+            key=lambda finding: {"low": 1, "medium": 2, "high": 3}[finding.confidence.value],
+        )
         return CompetitorGapBrief(
             company_name=lead.company_name,
-            sector="B2B software",
-            peer_group_definition="Series A/B B2B software companies showing hiring or delivery-scale pressure",
+            sector="Live public-web classification",
+            peer_group_definition=(
+                "Live mode uses the prospect's public funding, careers, layoffs, and leadership signals. "
+                "No attached sample competitor names are injected unless USE_SEEDED_DEMO_DATA=true."
+            ),
             prospect_position_summary=(
-                "Relative to a fast-growing peer set, the prospect shows early growth signals but not a strongly visible delivery-capacity story."
+                f"{lead.company_name} is classified as {hiring_signal_brief.segment_recommendation.value} "
+                f"with {hiring_signal_brief.segment_confidence.value} confidence from live public evidence."
             ),
-            recommended_hook=(
-                "Lead with a grounded note about growth pressure and ask whether delivery bandwidth is keeping pace with hiring plans."
-            ),
+            recommended_hook=strongest.description,
             confidence=hiring_signal_brief.segment_confidence,
-            top_quartile_companies=["Peer Alpha", "Peer Beta", "Peer Gamma"],
-            gap_findings=[
-                GapFinding(
-                    title="Delivery-capacity visibility gap",
-                    description="Peer companies present clearer evidence of structured engineering scale than the prospect currently does.",
-                    confidence=ConfidenceLevel.MEDIUM,
-                )
-            ],
+            top_quartile_companies=[],
+            gap_findings=gap_findings,
             source_refs=hiring_signal_brief.source_refs,
         )
 

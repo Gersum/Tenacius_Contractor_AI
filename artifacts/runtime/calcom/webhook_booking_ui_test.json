@@ -1,0 +1,4 @@
+{
+  "triggerEvent": "BOOKING_CREATED",
+  "bookingUid": "booking_ui_test"
+}

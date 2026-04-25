@@ -1,0 +1,32 @@
+services:
+  calcom-postgres:
+    image: postgres:15-alpine
+    container_name: tenacious-calcom-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-calcom}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-calcom}
+      POSTGRES_DB: ${POSTGRES_DB:-calcom}
+    ports:
+      - "5433:5432"
+    volumes:
+      - calcom-postgres-data:/var/lib/postgresql/data
+
+  calcom:
+    image: calcom/cal.com:v6.2.0-arm
+    container_name: tenacious-calcom
+    depends_on:
+      - calcom-postgres
+    ports:
+      - "3004:3000"
+      - "3003:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://calcom:calcom@calcom-postgres:5432/calcom}
+      DATABASE_DIRECT_URL: ${DATABASE_DIRECT_URL:-postgresql://calcom:calcom@calcom-postgres:5432/calcom}
+      NEXT_PUBLIC_WEBAPP_URL: ${NEXT_PUBLIC_WEBAPP_URL:-http://127.0.0.1:3004}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://127.0.0.1:3004}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-replace-me}
+      CALENDSO_ENCRYPTION_KEY: ${CALENDSO_ENCRYPTION_KEY:-replace-me-32-bytes}
+    restart: unless-stopped
+
+volumes:
+  calcom-postgres-data:

@@ -1,0 +1,27 @@
+{
+  "lead": {
+    "company_name": "Vercel",
+    "domain": "vercel.com",
+    "synthetic_contact_name": "Alex Morgan",
+    "synthetic_contact_email": "alex.morgan@example.com",
+    "synthetic_contact_phone": "+251911000000",
+    "source_type": "synthetic",
+    "icp_segment": "engineering_leadership_transition",
+    "icp_confidence": "high",
+    "status": "booked",
+    "created_at": "2026-04-25T11:16:07.919167+00:00",
+    "updated_at": "2026-04-25T11:16:07.919320+00:00",
+    "lead_id": "lead_d7500e33e5fb"
+  },
+  "conversation": {
+    "lead_id": "lead_d7500e33e5fb",
+    "channel": "email",
+    "stage": "booked",
+    "turn_count": 1,
+    "qualification_status": "qualified",
+    "booking_status": "booked",
+    "human_handoff_required": false,
+    "last_message_at": "2026-04-25T11:16:39.326700+00:00",
+    "conversation_id": "conv_5d52141f4bb6"
+  }
+}

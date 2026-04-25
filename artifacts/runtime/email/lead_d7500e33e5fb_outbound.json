@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_d7500e33e5fb",
+  "to_address": "alex.morgan@example.com",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Alex,\n\nI noticed Vercel currently has over 110 open roles in Products and Platform Security, which suggests a significant engineering growth phase. Companies in this state often find it challenging to quickly scale specialized teams without slowing down delivery.\n\nTenacious supports firms like yours by providing managed Python and data engineering squads that integrate closely with your existing teams, helping to maintain momentum without the typical recruiting delays.\n\nWould you be open to a brief 30-minute call next week to explore if this could be a fit? I can share how we work and listen to your priorities.\n\nBest,\nElena\nResearch Partner, Tenacious Intelligence Corporation\ngettenacious.com",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_d7500e33e5fb_outbound.json",
+  "subject": "Question on Vercel's engineering hiring momentum",
+  "sent_at": "2026-04-25T11:16:39.326357+00:00"
+}

@@ -1,0 +1,138 @@
+{
+  "record_id": "hs_lead_4e08bc05936d",
+  "status": "upserted",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/hubspot/lead_4e08bc05936d.json",
+  "fields": {
+    "company_name": "Vercel",
+    "contact_email": "alex.morgan@example.com",
+    "icp_segment": "unknown",
+    "icp_confidence": "medium",
+    "enrichment_timestamp": "2026-04-25T11:13:10.654310+00:00",
+    "conversation_stage": "booked",
+    "qualification_status": "qualified",
+    "booking_url": "http://127.0.0.1:3004/bookings/tenacious-discovery?lead=lead_4e08bc05936d",
+    "ai_maturity_score": 0,
+    "ai_maturity_reasoning": [
+      "Crunchbase funding confidence: low.",
+      "Public job-post confidence: low.",
+      "Leadership-change confidence: low.",
+      "Layoff confidence: medium."
+    ],
+    "funding_signal": "Public Crunchbase and funding search pages did not expose accessible funding detail.",
+    "funding_confidence": "low",
+    "job_post_signal": "Public company homepage appears blocked or inaccessible without login.",
+    "job_post_confidence": "low",
+    "layoff_signal": "no layoffs.csv match found for Vercel",
+    "layoff_confidence": "medium",
+    "leadership_change_signal": "Public company homepage appears blocked or inaccessible without login.",
+    "leadership_change_confidence": "low",
+    "bench_match_summary": "Bench match is guided by public signals from layoffs.",
+    "competitor_gap_position": "Prospect AI maturity is 0/3 against a reference top-quartile benchmark of 2.75. Current visible gap delta is 2.75.",
+    "recommended_hook": "Orrin Labs has no named AI/ML leadership role. CTO holds a combined infrastructure-and-data remit per the public team page. Public signals currently point to public company homepage appears blocked or inaccessible without login.",
+    "source_refs": [
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T11:12:56.788630+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover careers and jobs links.",
+        "accessed_at": "2026-04-25T11:12:58.793732+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover press, news, and leadership pages.",
+        "accessed_at": "2026-04-25T11:13:00.729528+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T11:13:01.810738+00:00"
+      },
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T11:12:56.788630+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover careers and jobs links.",
+        "accessed_at": "2026-04-25T11:12:58.793732+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Public company page used to discover press, news, and leadership pages.",
+        "accessed_at": "2026-04-25T11:13:00.729528+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T11:13:01.810738+00:00"
+      },
+      {
+        "title": "Peer signal: Northview Analytics source 1",
+        "url": "https://northview-analytics.example/team",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867377+00:00"
+      },
+      {
+        "title": "Peer signal: Northview Analytics source 2",
+        "url": "https://builtin.com/company/northview-analytics/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867380+00:00"
+      },
+      {
+        "title": "Peer signal: Axiom Data Works source 1",
+        "url": "https://axiom-dataworks.example/about",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867382+00:00"
+      },
+      {
+        "title": "Peer signal: Axiom Data Works source 2",
+        "url": "https://axiom-dataworks.example/investors/2025-letter",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867383+00:00"
+      },
+      {
+        "title": "Peer signal: Brightfold source 1",
+        "url": "https://wellfound.com/company/brightfold/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867383+00:00"
+      },
+      {
+        "title": "Peer signal: Meridian BI source 1",
+        "url": "https://github.com/meridian-bi",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867384+00:00"
+      },
+      {
+        "title": "Peer signal: Orrin Labs (prospect) source 1",
+        "url": "https://builtin.com/company/orrin-labs/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867385+00:00"
+      },
+      {
+        "title": "Peer signal: Pulsar Insights source 1",
+        "url": "https://pulsar-insights.example/blog/eval-framework-2026",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867386+00:00"
+      },
+      {
+        "title": "Peer signal: Candor Analytics source 1",
+        "url": "https://candor-analytics.example/careers",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:13:01.867387+00:00"
+      }
+    ]
+  },
+  "synced_at": "2026-04-25T11:13:10.654347+00:00"
+}

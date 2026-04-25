@@ -1,0 +1,113 @@
+{
+  "company_name": "Orrin Labs Inc.",
+  "crunchbase_ref": "https://www.crunchbase.com/organization/orrin-labs-inc",
+  "segment_recommendation": "recently_funded_series_ab",
+  "segment_confidence": "high",
+  "funding_signal": {
+    "name": "recent_funding",
+    "value": "Series B funding closed 2026-02-12 for $14,000,000",
+    "confidence": "high",
+    "evidence": [
+      "Seeded prospect profile from attached Tenacious sales materials.",
+      "Funding event is represented in the provided sample hiring brief."
+    ],
+    "source_refs": [
+      {
+        "title": "Crunchbase funding round",
+        "url": "https://www.crunchbase.com/funding_round/orrin-labs-series-b",
+        "note": "Seeded Tenacious sample brief.",
+        "accessed_at": "2026-04-25T07:50:31.468124+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "job_post_signal": {
+    "name": "job_post_velocity",
+    "value": "11 open roles today vs 4 sixty days ago (doubled).",
+    "confidence": "high",
+    "evidence": [
+      "Seeded prospect profile from attached Tenacious sales materials.",
+      "Job-post velocity is represented in the provided sample hiring brief."
+    ],
+    "source_refs": [
+      {
+        "title": "BuiltIn jobs",
+        "url": "https://builtin.com/company/orrin-labs/jobs",
+        "note": "Seeded Tenacious sample brief.",
+        "accessed_at": "2026-04-25T07:50:31.468129+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "layoff_signal": {
+    "name": "layoffs",
+    "value": "no layoffs.csv match found for Orrin Labs Inc.",
+    "confidence": "medium",
+    "evidence": [
+      "Searched the configured layoffs.csv snapshot by normalized company name and found no exact match."
+    ],
+    "source_refs": [
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T07:50:31.430850+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "leadership_change_signal": {
+    "name": "leadership_change",
+    "value": "No public leadership change detected in the seeded prospect profile.",
+    "confidence": "low",
+    "evidence": [
+      "Seeded prospect profile from attached Tenacious sales materials.",
+      "The sample hiring brief records no leadership change event."
+    ],
+    "source_refs": [
+      {
+        "title": "Company team page",
+        "url": "https://orrin-labs.example/team",
+        "note": "Seeded Tenacious sample brief.",
+        "accessed_at": "2026-04-25T07:50:31.468130+00:00"
+      }
+    ],
+    "freshness_days": null
+  },
+  "ai_maturity_score": 2,
+  "bench_match_summary": "Bench match from attached materials: python: 7 available; data: 9 available.",
+  "ai_maturity_reasoning": [
+    "ai_adjacent_open_roles: Two Data Platform Engineer roles and one ML Engineer role open on BuiltIn. 3 of 11 total engineering openings are AI-adjacent (27%).",
+    "named_ai_ml_leadership: No public Head of AI, VP Data, or Chief Scientist on the team page. CTO holds a combined infrastructure-and-data remit.",
+    "executive_commentary: CEO blog post Feb 2026 mentions 'AI-powered insights' as a 2026 priority. No keynote or podcast appearances on AI strategy in the last 12 months.",
+    "modern_data_ml_stack: BuiltWith reports dbt and Snowflake in use. No Databricks, no Weights and Biases, no vLLM. Stack is modern-data but not ML-platform-modern.",
+    "github_org_activity: Public GitHub org has 4 repos, all non-AI (developer tooling). Absence of AI repos is not proof of absence \u2014 AI work may be in private repos."
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase funding round",
+      "url": "https://www.crunchbase.com/funding_round/orrin-labs-series-b",
+      "note": "Seeded Tenacious sample brief.",
+      "accessed_at": "2026-04-25T07:50:31.468124+00:00"
+    },
+    {
+      "title": "BuiltIn jobs",
+      "url": "https://builtin.com/company/orrin-labs/jobs",
+      "note": "Seeded Tenacious sample brief.",
+      "accessed_at": "2026-04-25T07:50:31.468129+00:00"
+    },
+    {
+      "title": "Company team page",
+      "url": "https://orrin-labs.example/team",
+      "note": "Seeded Tenacious sample brief.",
+      "accessed_at": "2026-04-25T07:50:31.468130+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-25T07:50:31.430850+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T07:50:31.468494+00:00"
+}

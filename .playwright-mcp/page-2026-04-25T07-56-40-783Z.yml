@@ -1,0 +1,185 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: Tenacious Conversion Engine
+      - heading "Run the pipeline from one operator console." [level=1] [ref=e6]
+      - paragraph [ref=e7]:
+        - text: Trigger a fresh synthetic-lead run, recompute tau2 evidence, and inspect every artifact the demo produces. If the API badge is offline, restart with
+        - code [ref=e8]: python3 visualization/server.py
+        - text: .
+    - region "Operator actions" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Operator API online
+        - generic [ref=e12]: No action yet
+      - generic [ref=e13]:
+        - button "Run Full Pipeline" [ref=e14] [cursor=pointer]
+        - button "Recompute Tau Score" [ref=e15] [cursor=pointer]
+        - button "Refresh Evidence" [ref=e16] [cursor=pointer]
+  - generic [ref=e17]:
+    - article [ref=e18]:
+      - paragraph [ref=e19]: Synthetic Lead
+      - heading "Input for next run" [level=2] [ref=e20]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - text: Company
+          - textbox "Company" [ref=e23]: Orrin Labs Inc.
+        - generic [ref=e24]:
+          - text: Domain
+          - textbox "Domain" [ref=e25]: orrin-labs.example
+        - generic [ref=e26]:
+          - text: Contact
+          - textbox "Contact" [ref=e27]: Elena Park
+        - generic [ref=e28]:
+          - text: Email
+          - textbox "Email" [ref=e29]: elena@orrin-labs.example
+        - generic [ref=e30]:
+          - text: Phone
+          - textbox "Phone" [ref=e31]: "+251911000000"
+    - article [ref=e32]:
+      - paragraph [ref=e33]: Workflow
+      - heading "Channel hierarchy" [level=2] [ref=e34]
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]: "1"
+          - paragraph [ref=e38]: Enrich
+        - generic [ref=e39]:
+          - generic [ref=e40]: "2"
+          - paragraph [ref=e41]: Email
+        - generic [ref=e42]:
+          - generic [ref=e43]: "3"
+          - paragraph [ref=e44]: Reply
+        - generic [ref=e45]:
+          - generic [ref=e46]: "4"
+          - paragraph [ref=e47]: Qualify
+        - generic [ref=e48]:
+          - generic [ref=e49]: "5"
+          - paragraph [ref=e50]: Book
+        - generic [ref=e51]:
+          - generic [ref=e52]: "6"
+          - paragraph [ref=e53]: SMS warm follow-up
+        - generic [ref=e54]:
+          - generic [ref=e55]: "7"
+          - paragraph [ref=e56]: HubSpot
+  - generic [ref=e57]:
+    - article [ref=e58]:
+      - paragraph [ref=e59]: Current Run
+      - heading "Orrin Labs Inc." [level=2] [ref=e60]
+      - paragraph [ref=e61]: Lead lead_57fa0007d4ef reached booked with booking status booked.
+      - generic [ref=e62]:
+        - generic [ref=e63]: Trace steps
+        - strong [ref=e64]: "14"
+      - generic [ref=e65]:
+        - generic [ref=e66]: Tau pass@1
+        - strong [ref=e67]: 0.7267 (0.6504 - 0.7917)
+      - generic [ref=e68]:
+        - generic [ref=e69]: Avg tau cost
+        - strong [ref=e70]: $0.0199
+    - article [ref=e71]:
+      - paragraph [ref=e72]: Signals
+      - heading "Enrichment output" [level=2] [ref=e73]
+      - generic [ref=e74]:
+        - generic [ref=e75]:
+          - strong [ref=e76]: recent_funding
+          - paragraph [ref=e77]: Series B funding closed 2026-02-12 for $14,000,000
+        - generic [ref=e78]: high
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - strong [ref=e81]: job_post_velocity
+          - paragraph [ref=e82]: 11 open roles today vs 4 sixty days ago (doubled).
+        - generic [ref=e83]: high
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - strong [ref=e86]: layoffs
+          - paragraph [ref=e87]: no layoffs.csv match found for Orrin Labs Inc.
+        - generic [ref=e88]: medium
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - strong [ref=e91]: leadership_change
+          - paragraph [ref=e92]: No public leadership change detected in the seeded prospect profile.
+        - generic [ref=e93]: low
+      - generic [ref=e94]:
+        - generic [ref=e95]: AI maturity
+        - strong [ref=e96]: 2/3
+    - article [ref=e97]:
+      - paragraph [ref=e98]: Operations
+      - heading "Writes and handoffs" [level=2] [ref=e99]
+      - generic [ref=e100]:
+        - generic [ref=e101]:
+          - strong [ref=e102]: Email
+          - paragraph [ref=e103]: sent_to_sink via resend_sink
+        - generic [ref=e104]: ok
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - strong [ref=e107]: SMS
+          - paragraph [ref=e108]: sent_to_sink via africas_talking_sink
+        - generic [ref=e109]: ok
+      - generic [ref=e110]:
+        - generic [ref=e111]:
+          - strong [ref=e112]: HubSpot
+          - paragraph [ref=e113]: upserted with enrichment timestamp
+        - generic [ref=e114]: ok
+      - generic [ref=e115]:
+        - generic [ref=e116]:
+          - strong [ref=e117]: Cal.com
+          - paragraph [ref=e118]: simulated via fallback at http://127.0.0.1:3000/bookings/tenacious-discovery?lead=lead_57fa0007d4ef
+        - generic [ref=e119]: ok
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - strong [ref=e122]: Discovery brief
+          - paragraph [ref=e123]: ../artifacts/runtime/discovery/lead_57fa0007d4ef.md
+        - generic [ref=e124]: ok
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - strong [ref=e127]: Evidence graph
+          - paragraph [ref=e128]: ../evidence_graph.json
+        - generic [ref=e129]: ok
+    - article [ref=e130]:
+      - paragraph [ref=e131]: Traces
+      - heading "Latest step log" [level=2] [ref=e132]
+      - generic [ref=e133]:
+        - generic [ref=e134]: send_email
+        - strong [ref=e135]: 0 ms
+      - generic [ref=e136]:
+        - generic [ref=e137]: receive_reply
+        - strong [ref=e138]: 0 ms
+      - generic [ref=e139]:
+        - generic [ref=e140]: qualify_reply
+        - strong [ref=e141]: 0 ms
+      - generic [ref=e142]:
+        - generic [ref=e143]: book_calcom_meeting
+        - strong [ref=e144]: 0 ms
+      - generic [ref=e145]:
+        - generic [ref=e146]: write_discovery_context_brief
+        - strong [ref=e147]: 0 ms
+      - generic [ref=e148]:
+        - generic [ref=e149]: send_sms_schedule_confirmation
+        - strong [ref=e150]: 0 ms
+      - generic [ref=e151]:
+        - generic [ref=e152]: sync_hubspot_record
+        - strong [ref=e153]: 0 ms
+      - generic [ref=e154]:
+        - generic [ref=e155]: persist_local_state
+        - strong [ref=e156]: 0 ms
+      - generic [ref=e157]:
+        - generic [ref=e158]: write_visualization_manifest
+        - strong [ref=e159]: 0 ms
+  - generic [ref=e160]:
+    - generic [ref=e161]:
+      - generic [ref=e162]:
+        - paragraph [ref=e163]: Artifact Explorer
+        - heading "Open the evidence generated by the run" [level=2] [ref=e164]
+      - combobox "Select artifact" [ref=e165]:
+        - option "state" [selected]
+        - option "email outbound"
+        - option "email reply"
+        - option "sms confirmation"
+        - option "hubspot"
+        - option "calcom"
+        - option "discovery context"
+        - option "hiring signal"
+        - option "competitor gap"
+        - option "agent traces"
+        - option "eval score log"
+        - option "eval trace log"
+        - option "evidence graph"
+    - generic [ref=e166]: "{ \"lead\": { \"company_name\": \"Orrin Labs Inc.\", \"domain\": \"orrin-labs.example\", \"synthetic_contact_name\": \"Elena Park\", \"synthetic_contact_email\": \"elena@orrin-labs.example\", \"synthetic_contact_phone\": \"+251911000000\", \"source_type\": \"synthetic\", \"icp_segment\": \"recently_funded_series_ab\", \"icp_confidence\": \"high\", \"status\": \"booked\", \"created_at\": \"2026-04-25T07:52:17.277903+00:00\", \"updated_at\": \"2026-04-25T07:52:17.277914+00:00\", \"lead_id\": \"lead_57fa0007d4ef\" }, \"conversation\": { \"lead_id\": \"lead_57fa0007d4ef\", \"channel\": \"email\", \"stage\": \"booked\", \"turn_count\": 1, \"qualification_status\": \"qualified\", \"booking_status\": \"booked\", \"human_handoff_required\": false, \"last_message_at\": \"2026-04-25T07:52:21.546917+00:00\", \"conversation_id\": \"conv_4a90b39f4579\" } }"

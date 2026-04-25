@@ -1,0 +1,27 @@
+{
+  "lead": {
+    "company_name": "Vercel",
+    "domain": "vercel.com",
+    "synthetic_contact_name": "Alex Morgan",
+    "synthetic_contact_email": "alex.morgan@example.com",
+    "synthetic_contact_phone": "+251911000000",
+    "source_type": "synthetic",
+    "icp_segment": "unknown",
+    "icp_confidence": "medium",
+    "status": "booked",
+    "created_at": "2026-04-25T11:12:56.787948+00:00",
+    "updated_at": "2026-04-25T11:12:56.788119+00:00",
+    "lead_id": "lead_4e08bc05936d"
+  },
+  "conversation": {
+    "lead_id": "lead_4e08bc05936d",
+    "channel": "email",
+    "stage": "booked",
+    "turn_count": 1,
+    "qualification_status": "qualified",
+    "booking_status": "booked",
+    "human_handoff_required": false,
+    "last_message_at": "2026-04-25T11:13:10.220656+00:00",
+    "conversation_id": "conv_08054405da1e"
+  }
+}

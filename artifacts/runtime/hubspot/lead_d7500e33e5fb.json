@@ -1,0 +1,270 @@
+{
+  "record_id": "hs_lead_d7500e33e5fb",
+  "status": "upserted",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/hubspot/lead_d7500e33e5fb.json",
+  "fields": {
+    "company_name": "Vercel",
+    "contact_email": "alex.morgan@example.com",
+    "icp_segment": "engineering_leadership_transition",
+    "icp_confidence": "high",
+    "enrichment_timestamp": "2026-04-25T11:16:39.442441+00:00",
+    "conversation_stage": "booked",
+    "qualification_status": "qualified",
+    "booking_url": "http://127.0.0.1:3004/bookings/tenacious-discovery?lead=lead_d7500e33e5fb",
+    "ai_maturity_score": 2,
+    "ai_maturity_reasoning": [
+      "Crunchbase funding confidence: low.",
+      "Public job-post confidence: high.",
+      "Leadership-change confidence: high.",
+      "Layoff confidence: medium."
+    ],
+    "funding_signal": "Public Crunchbase and funding search pages did not expose accessible funding detail.",
+    "funding_confidence": "low",
+    "job_post_signal": "Public careers/search pages surface 113 open roles: Products, Core Platform, Security, Platform Security.",
+    "job_post_confidence": "high",
+    "layoff_signal": "no layoffs.csv match found for Vercel",
+    "layoff_confidence": "medium",
+    "leadership_change_signal": "Public news/search pages mention leadership context: Perspectives Feb 5, 2026 Executive Function: Building systems that can make decisions without you COO Jeanne Grosser sits down with First Round Capital's Brett Berson to unpack what separates good executives from extraordinary ones.",
+    "leadership_change_confidence": "high",
+    "bench_match_summary": "Bench match is guided by public signals from job_post_velocity, leadership_change, layoffs.",
+    "competitor_gap_position": "Prospect AI maturity is 2/3 against a reference top-quartile benchmark of 2.75. Current visible gap delta is 0.75.",
+    "recommended_hook": "Vercel's visible public profile is compared against this benchmark capability. Public signals currently point to public news/search pages mention leadership context: perspectives feb 5, 2026 executive function: building systems that can make decisions without you coo jeanne grosser sits down with first round capital's brett berson to unpack what separates good executives from extraordinary ones.",
+    "source_refs": [
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T11:16:07.919862+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T11:16:09.404107+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:13.461746+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:15.189613+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/login?next=%2Fjoin-us",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:17.491438+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/login?next=%2Fopenings",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:19.777860+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/company/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:21.377065+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T11:16:21.380014+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/login?next=%2Fnews",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:25.349771+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:26.252230+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/blog",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:27.878148+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:30.427595+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:32.014436+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/about/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:33.670918+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T11:16:33.684214+00:00"
+      },
+      {
+        "title": "Crunchbase public organization page",
+        "url": "https://www.crunchbase.com/organization/vercel",
+        "note": "Public Crunchbase page collected without login or captcha bypass.",
+        "accessed_at": "2026-04-25T11:16:07.919862+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T11:16:09.404107+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:13.461746+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:15.189613+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/login?next=%2Fjoin-us",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:17.491438+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/login?next=%2Fopenings",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:19.777860+00:00"
+      },
+      {
+        "title": "Public careers page",
+        "url": "https://vercel.com/company/careers",
+        "note": "Rendered public job page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:21.377065+00:00"
+      },
+      {
+        "title": "Company homepage",
+        "url": "https://vercel.com",
+        "note": "Company homepage was attempted, but it appeared blocked or inaccessible without bypass.",
+        "accessed_at": "2026-04-25T11:16:21.380014+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/login?next=%2Fnews",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:25.349771+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:26.252230+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/blog",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:27.878148+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:30.427595+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/company/press",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:32.014436+00:00"
+      },
+      {
+        "title": "Public leadership/news page",
+        "url": "https://vercel.com/about/news",
+        "note": "Rendered public news page discovered from the company website or public search.",
+        "accessed_at": "2026-04-25T11:16:33.670918+00:00"
+      },
+      {
+        "title": "layoffs.csv snapshot",
+        "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+        "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+        "accessed_at": "2026-04-25T11:16:33.684214+00:00"
+      },
+      {
+        "title": "Peer signal: Northview Analytics source 1",
+        "url": "https://northview-analytics.example/team",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725422+00:00"
+      },
+      {
+        "title": "Peer signal: Northview Analytics source 2",
+        "url": "https://builtin.com/company/northview-analytics/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725424+00:00"
+      },
+      {
+        "title": "Peer signal: Axiom Data Works source 1",
+        "url": "https://axiom-dataworks.example/about",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725426+00:00"
+      },
+      {
+        "title": "Peer signal: Axiom Data Works source 2",
+        "url": "https://axiom-dataworks.example/investors/2025-letter",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725426+00:00"
+      },
+      {
+        "title": "Peer signal: Brightfold source 1",
+        "url": "https://wellfound.com/company/brightfold/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725427+00:00"
+      },
+      {
+        "title": "Peer signal: Meridian BI source 1",
+        "url": "https://github.com/meridian-bi",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725428+00:00"
+      },
+      {
+        "title": "Peer signal: Orrin Labs (prospect) source 1",
+        "url": "https://builtin.com/company/orrin-labs/jobs",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725429+00:00"
+      },
+      {
+        "title": "Peer signal: Pulsar Insights source 1",
+        "url": "https://pulsar-insights.example/blog/eval-framework-2026",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725430+00:00"
+      },
+      {
+        "title": "Peer signal: Candor Analytics source 1",
+        "url": "https://candor-analytics.example/careers",
+        "note": "Attached sector-benchmark competitor sample.",
+        "accessed_at": "2026-04-25T11:16:33.725430+00:00"
+      }
+    ]
+  },
+  "synced_at": "2026-04-25T11:16:39.442456+00:00"
+}

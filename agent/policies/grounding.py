@@ -4,10 +4,12 @@ import json
 
 from agent.config import Settings
 from agent.llm.openrouter import OpenRouterClient, OpenRouterError
+from agent.materials.tenacious import EmailPromptMaterial, TenaciousSalesMaterials
 from agent.models.schemas import (
     Channel,
     CompetitorGapBrief,
     ConfidenceLevel,
+    ICPSegment,
     HiringSignalBrief,
     LeadRecord,
     MessageDraft,
@@ -23,6 +25,7 @@ class GroundingPolicy:
 
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
+        self.materials = TenaciousSalesMaterials(settings.project_root)
         self.openrouter_client = (
             OpenRouterClient(
                 api_key=settings.openrouter_api_key,
@@ -40,10 +43,12 @@ class GroundingPolicy:
         hiring_signal_brief: HiringSignalBrief,
         competitor_gap_brief: CompetitorGapBrief,
     ) -> MessageDraft:
+        prompt_materials = self.materials.prompt_materials(lead, hiring_signal_brief, competitor_gap_brief)
         fallback_draft = self._compose_template_email(
             lead=lead,
             hiring_signal_brief=hiring_signal_brief,
             competitor_gap_brief=competitor_gap_brief,
+            prompt_materials=prompt_materials,
         )
         if self.openrouter_client is None:
             return fallback_draft
@@ -51,13 +56,14 @@ class GroundingPolicy:
         try:
             generation = self.openrouter_client.create_chat_completion(
                 messages=[
-                    {"role": "system", "content": self._system_prompt()},
+                    {"role": "system", "content": self._system_prompt(prompt_materials)},
                     {
                         "role": "user",
                         "content": self._user_prompt(
                             lead=lead,
                             hiring_signal_brief=hiring_signal_brief,
                             competitor_gap_brief=competitor_gap_brief,
+                            prompt_materials=prompt_materials,
                         ),
                     },
                 ],
@@ -108,18 +114,23 @@ class GroundingPolicy:
         lead: LeadRecord,
         hiring_signal_brief: HiringSignalBrief,
         competitor_gap_brief: CompetitorGapBrief,
+        prompt_materials: EmailPromptMaterial,
     ) -> MessageDraft:
         opening = {
             ConfidenceLevel.HIGH: "The public signals are strong enough to say",
             ConfidenceLevel.MEDIUM: "From the public signals we could verify, it looks like",
             ConfidenceLevel.LOW: "I may be missing context, but the public signals suggest",
         }[hiring_signal_brief.segment_confidence]
+        pitch_line = self._segment_pitch_line(hiring_signal_brief)
+        gap_line = self._prospect_safe_gap_line(competitor_gap_brief)
+        materials_note = "The attached case studies back the pattern if you want a reference point."
 
         body = (
             f"Hi {lead.synthetic_contact_name},\n\n"
             f"{opening} {lead.company_name} may be entering a period where delivery demand rises faster than hiring can absorb. "
             f"We saw {hiring_signal_brief.funding_signal.value}, and the public hiring picture suggests there may be some growth pressure.\n\n"
-            f"{competitor_gap_brief.recommended_hook} {bench_safe_value_prop()}\n\n"
+            f"For teams at that stage, Tenacious can help {pitch_line} {gap_line}\n\n"
+            f"{bench_safe_value_prop()} {materials_note}\n\n"
             "If that is directionally true, I can share a short point of view or line up a 30-minute discovery call.\n"
         )
         return MessageDraft(
@@ -139,12 +150,44 @@ class GroundingPolicy:
             generation_mode="template",
         )
 
-    def _system_prompt(self) -> str:
+    def _segment_pitch_line(self, hiring_signal_brief: HiringSignalBrief) -> str:
+        if hiring_signal_brief.segment_recommendation == ICPSegment.RECENTLY_FUNDED:
+            if hiring_signal_brief.ai_maturity_score >= 2:
+                return "scale your AI team faster than in-house hiring can support."
+            return "stand up your first AI function with a dedicated squad."
+        if hiring_signal_brief.segment_recommendation == ICPSegment.COST_RESTRUCTURING:
+            if hiring_signal_brief.ai_maturity_score >= 2:
+                return "preserve your AI delivery capacity while reshaping cost structure."
+            return "maintain platform delivery velocity through the restructure."
+        if hiring_signal_brief.segment_recommendation == ICPSegment.LEADERSHIP_TRANSITION:
+            return "the first 90 days are when vendor mix gets reassessed."
+        if hiring_signal_brief.segment_recommendation == ICPSegment.CAPABILITY_GAP:
+            return "the question is whether the capability gap is already being built in-house or still needs support."
+        return "the public signals suggest a concrete delivery question worth testing."
+
+    def _prospect_safe_gap_line(self, competitor_gap_brief: CompetitorGapBrief) -> str:
+        high_confidence_gaps = [
+            gap for gap in competitor_gap_brief.gap_findings if gap.confidence == ConfidenceLevel.HIGH
+        ]
+        if high_confidence_gaps:
+            title = high_confidence_gaps[0].title.rstrip(".")
+            return (
+                "One research question worth validating is whether "
+                f"{title.lower()} is a current priority or intentionally out of scope."
+            )
+        return (
+            "The competitor-gap brief also suggests a few questions worth validating, "
+            "but I would treat them as hypotheses rather than claims."
+        )
+
+    def _system_prompt(self, prompt_materials: EmailPromptMaterial) -> str:
         return (
             "You write outbound sales emails for Tenacious Consulting and Outsourcing. "
             "Use only the provided public signals. Do not invent facts, logos, case studies, or certainty. "
             "Email is the primary channel. Do not mention SMS or voice in the first outreach. "
-            "Keep the email concise, plain text, and grounded. Return only JSON."
+            "Keep the email concise, plain text, and grounded. Return only JSON. "
+            "Follow the attached style guide and pricing guardrails. "
+            f"Style markers: {prompt_materials.style_guide[:240]}"
         )
 
     def _user_prompt(
@@ -152,6 +195,7 @@ class GroundingPolicy:
         lead: LeadRecord,
         hiring_signal_brief: HiringSignalBrief,
         competitor_gap_brief: CompetitorGapBrief,
+        prompt_materials: EmailPromptMaterial,
     ) -> str:
         context = {
             "lead": {
@@ -174,6 +218,16 @@ class GroundingPolicy:
                 "recommended_hook": competitor_gap_brief.recommended_hook,
             },
             "safe_value_prop": bench_safe_value_prop(),
+            "tenacious_materials": {
+                "icp_definition": prompt_materials.icp_definition[:2200],
+                "pricing_guardrails": prompt_materials.pricing_sheet[:1800],
+                "cold_sequence": prompt_materials.cold_sequence[:2500],
+                "warm_sequence": prompt_materials.warm_sequence[:2200],
+                "reengagement_sequence": prompt_materials.reengagement_sequence[:1800],
+                "case_studies": prompt_materials.case_studies[:1800],
+                "bench_summary": prompt_materials.bench_summary,
+                "baseline_numbers": prompt_materials.baseline_numbers[:1400],
+            },
         }
         return (
             "Draft a single cold outbound email for the lead below.\n"

@@ -2,25 +2,43 @@
   {
     "run_label": "dev_baseline",
     "domain": "retail",
-    "model_name": "pending_pinned_model",
-    "pass_at_1_mean": null,
-    "confidence_interval_95": null,
-    "cost_usd": null,
-    "p50_latency_ms": null,
-    "p95_latency_ms": null,
-    "status": "not_run",
-    "notes": "Awaiting real tau2-bench execution against the pinned dev-tier model."
+    "model_name": "pinned_dev_tier_model",
+    "evaluated_simulations": 150,
+    "total_tasks": 30,
+    "num_trials": 5.0,
+    "pass_at_1": 0.7267,
+    "pass_at_1_ci_95": [
+      0.6504,
+      0.7917
+    ],
+    "avg_agent_cost": 0.0199,
+    "p50_latency_seconds": 105.9521,
+    "p95_latency_seconds": 551.6491,
+    "infra_error_count": 0,
+    "trace_ref": "eval/trace_log.jsonl",
+    "git_commit": "d11a97072c49d093f7b5a3e4fe9da95b490d43ba",
+    "status": "completed",
+    "notes": "Full 5-trial dev-slice baseline derived from eval/trace_log.jsonl."
   },
   {
     "run_label": "reproduction_check",
     "domain": "retail",
-    "model_name": "pending_pinned_model",
-    "pass_at_1_mean": null,
-    "confidence_interval_95": null,
-    "cost_usd": null,
-    "p50_latency_ms": null,
-    "p95_latency_ms": null,
-    "status": "not_run",
-    "notes": "Keep this entry for the required reproduction check once real runs are available."
+    "model_name": "pinned_dev_tier_model",
+    "evaluated_simulations": 15,
+    "total_tasks": 15,
+    "num_trials": 1.0,
+    "pass_at_1": 0.8667,
+    "pass_at_1_ci_95": [
+      0.6212,
+      0.9626
+    ],
+    "avg_agent_cost": 0.0219,
+    "p50_latency_seconds": 82.5982,
+    "p95_latency_seconds": 365.8251,
+    "infra_error_count": 0,
+    "trace_ref": "eval/trace_log.jsonl",
+    "git_commit": "d11a97072c49d093f7b5a3e4fe9da95b490d43ba",
+    "status": "completed",
+    "notes": "Small-scale reproduction check from the first 15 completed trajectories in eval/trace_log.jsonl."
   }
 ]

@@ -1,0 +1,111 @@
+{
+  "company_name": "Vercel",
+  "sector": "Business Intelligence / Analytics",
+  "peer_group_definition": "AI-augmented BI for mid-market reference benchmark built from 7 peer companies in the attached Tenacious sample.",
+  "prospect_position_summary": "Prospect AI maturity is 0/3 against a reference top-quartile benchmark of 2.75. Current visible gap delta is 2.75.",
+  "recommended_hook": "Orrin Labs has no named AI/ML leadership role. CTO holds a combined infrastructure-and-data remit per the public team page. Public signals currently point to public company homepage appears blocked or inaccessible without login.",
+  "confidence": "medium",
+  "top_quartile_companies": [
+    "Northview Analytics",
+    "Axiom Data Works",
+    "Pulsar Insights"
+  ],
+  "gap_findings": [
+    {
+      "title": "Dedicated AI/ML leadership role at the executive level",
+      "description": "Orrin Labs has no named AI/ML leadership role. CTO holds a combined infrastructure-and-data remit per the public team page. Public signals currently point to public company homepage appears blocked or inaccessible without login.",
+      "confidence": "high"
+    },
+    {
+      "title": "Dedicated MLOps / ML-platform engineering function (roles open 45+ days suggests active buildout)",
+      "description": "Orrin Labs has Data Platform Engineer roles open but no explicitly MLOps-labeled roles. The distinction may be deliberate (integrated in data-platform role) or a gap. Current hiring signal: Public company homepage appears blocked or inaccessible without login.",
+      "confidence": "medium"
+    },
+    {
+      "title": "Public technical commentary on agentic or evaluation-framework work",
+      "description": "Orrin Labs blog mentions AI as a priority but has no technical depth posts on agentic workflows or evaluation in the last 12 months. Funding and AI readiness signals currently read as low and score 0/3.",
+      "confidence": "medium"
+    }
+  ],
+  "source_refs": [
+    {
+      "title": "Crunchbase public organization page",
+      "url": "https://www.crunchbase.com/organization/vercel",
+      "note": "Public Crunchbase page collected without login or captcha bypass.",
+      "accessed_at": "2026-04-25T11:12:56.788630+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Public company page used to discover careers and jobs links.",
+      "accessed_at": "2026-04-25T11:12:58.793732+00:00"
+    },
+    {
+      "title": "Company homepage",
+      "url": "https://vercel.com",
+      "note": "Public company page used to discover press, news, and leadership pages.",
+      "accessed_at": "2026-04-25T11:13:00.729528+00:00"
+    },
+    {
+      "title": "layoffs.csv snapshot",
+      "url": "file:///Users/gersumasfaw/Downloads/layoffs.csv",
+      "note": "Configured layoffs dataset used for layoff-signal enrichment.",
+      "accessed_at": "2026-04-25T11:13:01.810738+00:00"
+    },
+    {
+      "title": "Peer signal: Northview Analytics source 1",
+      "url": "https://northview-analytics.example/team",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867377+00:00"
+    },
+    {
+      "title": "Peer signal: Northview Analytics source 2",
+      "url": "https://builtin.com/company/northview-analytics/jobs",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867380+00:00"
+    },
+    {
+      "title": "Peer signal: Axiom Data Works source 1",
+      "url": "https://axiom-dataworks.example/about",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867382+00:00"
+    },
+    {
+      "title": "Peer signal: Axiom Data Works source 2",
+      "url": "https://axiom-dataworks.example/investors/2025-letter",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867383+00:00"
+    },
+    {
+      "title": "Peer signal: Brightfold source 1",
+      "url": "https://wellfound.com/company/brightfold/jobs",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867383+00:00"
+    },
+    {
+      "title": "Peer signal: Meridian BI source 1",
+      "url": "https://github.com/meridian-bi",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867384+00:00"
+    },
+    {
+      "title": "Peer signal: Orrin Labs (prospect) source 1",
+      "url": "https://builtin.com/company/orrin-labs/jobs",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867385+00:00"
+    },
+    {
+      "title": "Peer signal: Pulsar Insights source 1",
+      "url": "https://pulsar-insights.example/blog/eval-framework-2026",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867386+00:00"
+    },
+    {
+      "title": "Peer signal: Candor Analytics source 1",
+      "url": "https://candor-analytics.example/careers",
+      "note": "Attached sector-benchmark competitor sample.",
+      "accessed_at": "2026-04-25T11:13:01.867387+00:00"
+    }
+  ],
+  "generated_at": "2026-04-25T11:13:01.867409+00:00"
+}

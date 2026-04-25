@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qs, quote_plus, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 
 from agent.models.schemas import ConfidenceLevel, ScoredSignal, SourceRef
@@ -202,6 +202,61 @@ class _VisibleContentParser(HTMLParser):
         )
 
 
+class _SearchResultParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.results: list[tuple[str, str]] = []
+        self._current_href: str | None = None
+        self._current_text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag != "a":
+            return
+        attrs_map = {key: value for key, value in attrs}
+        href = attrs_map.get("href")
+        if href:
+            self._current_href = href
+            self._current_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self._current_href is not None and data.strip():
+            self._current_text.append(data.strip())
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag != "a" or self._current_href is None:
+            return
+        text = " ".join(self._current_text).strip()
+        href = _normalize_search_href(self._current_href)
+        if href and text and not _is_ignored_search_href(href):
+            self.results.append((href, text))
+        self._current_href = None
+        self._current_text = []
+
+
+def _normalize_search_href(href: str) -> str:
+    parsed = urlparse(href)
+    if "duckduckgo.com" in parsed.netloc and parsed.path.startswith("/l/"):
+        uddg = parse_qs(parsed.query).get("uddg", [""])[0]
+        return unquote(uddg)
+    return href
+
+
+def _is_ignored_search_href(href: str) -> bool:
+    parsed = urlparse(href)
+    return not parsed.scheme.startswith("http") or any(
+        blocked in parsed.netloc
+        for blocked in (
+            "duckduckgo.com",
+            "google.com",
+            "bing.com",
+            "facebook.com",
+            "linkedin.com",
+            "x.com",
+            "twitter.com",
+        )
+    )
+
+
 class PublicSignalCollector:
     """Collect public hiring signals without logins or captcha bypass."""
 
@@ -234,19 +289,50 @@ class PublicSignalCollector:
             )
 
         snapshot = self._capture_public_page(url)
+        search_results = self._search_public_web(
+            f'"{self.company_name}" funding OR raised OR "Series A" OR "Series B"'
+        )
+        search_snapshots = [self._capture_public_page(result_url) for result_url, _ in search_results[:4]]
+        search_refs = [
+            _public_source_ref(
+                title="Public web funding search result",
+                url=result_url,
+                note=f"Search result discovered from query about {self.company_name} funding.",
+            )
+            for result_url, _ in search_results[:4]
+        ]
         if snapshot.blocked:
+            fallback_sentence = self._first_matching_sentence(
+                " ".join(s.text for s in search_snapshots), _FUNDING_PATTERNS
+            )
+            if fallback_sentence:
+                return ScoredSignal(
+                    name="recent_funding",
+                    value=f"Public web search indicates funding activity: {fallback_sentence}",
+                    confidence=ConfidenceLevel.MEDIUM,
+                    evidence=[
+                        f"Crunchbase was inaccessible at {snapshot.final_url}; no bypass was attempted.",
+                        f"Matched funding language from public search result pages: {fallback_sentence}",
+                    ],
+                    source_refs=[source_ref, *search_refs],
+                )
             return ScoredSignal(
                 name="recent_funding",
-                value="Public Crunchbase page appears blocked or inaccessible without login.",
+                value="Public Crunchbase and funding search pages did not expose accessible funding detail.",
                 confidence=ConfidenceLevel.LOW,
                 evidence=[
                     f"Attempted to collect from {snapshot.final_url}.",
-                    "The rendered page contained a login, captcha, or anti-bot block and was not bypassed.",
+                    "Crunchbase was blocked or inaccessible and no public search result produced a funding sentence.",
                 ],
-                source_refs=[source_ref],
+                source_refs=[source_ref, *search_refs],
             )
 
-        text = snapshot.text or f"{snapshot.title} {' '.join(snapshot.link_texts)}"
+        text = " ".join(
+            [
+                snapshot.text or f"{snapshot.title} {' '.join(snapshot.link_texts)}",
+                *[s.text for s in search_snapshots if not s.blocked],
+            ]
+        )
         sentence = self._first_matching_sentence(text, _FUNDING_PATTERNS)
         if sentence:
             confidence = ConfidenceLevel.HIGH if self._has_strong_funding_phrase(sentence) else ConfidenceLevel.MEDIUM
@@ -258,7 +344,7 @@ class PublicSignalCollector:
                     f"Collected the public Crunchbase organization page at {snapshot.final_url}.",
                     f"Matched a public funding phrase in the rendered page text: {sentence}",
                 ],
-                source_refs=[source_ref],
+                source_refs=[source_ref, *search_refs],
             )
 
         confidence = ConfidenceLevel.MEDIUM if text else ConfidenceLevel.LOW
@@ -270,7 +356,7 @@ class PublicSignalCollector:
                 f"Collected the public Crunchbase organization page at {snapshot.final_url}.",
                 "The rendered page did not expose a clear funding round, but the page itself loaded successfully.",
             ],
-            source_refs=[source_ref],
+            source_refs=[source_ref, *search_refs],
         )
 
     def collect_job_post_signal(self) -> ScoredSignal:
@@ -290,23 +376,185 @@ class PublicSignalCollector:
             )
 
         homepage_snapshot = self._capture_public_page(homepage_url)
+        candidate_urls = self._standard_candidate_urls(
+            homepage_snapshot.final_url or homepage_url,
+            standard_paths=("/careers", "/jobs", "/join-us", "/openings", "/company/careers"),
+        )
+        if not homepage_snapshot.blocked:
+            candidate_urls.extend(
+                self._discover_candidate_urls(
+                    homepage_snapshot,
+                    standard_paths=(),
+                    keywords=("careers", "jobs", "open roles", "join us", "join-us", "apply"),
+                )
+            )
+        search_results = self._search_public_web(f'"{self.company_name}" careers jobs open roles')
+        candidate_urls.extend(result_url for result_url, _ in search_results[:6])
+        snapshots = [] if homepage_snapshot.blocked else [homepage_snapshot]
+        source_refs = [homepage_ref]
         if homepage_snapshot.blocked:
+            source_refs[0].note = "Company homepage was attempted, but it appeared blocked or inaccessible without bypass."
+        for result_url, result_title in search_results[:6]:
+            source_refs.append(
+                _public_source_ref(
+                    title=f"Public job search result: {result_title[:80]}",
+                    url=result_url,
+                    note="Public search result used to discover careers or open-role pages.",
+                )
+            )
+        for candidate_url in candidate_urls[:8]:
+            candidate_snapshot = self._capture_public_page(candidate_url)
+            snapshots.append(candidate_snapshot)
+            source_refs.append(
+                _public_source_ref(
+                    title="Public careers page",
+                    url=candidate_snapshot.final_url,
+                    note="Rendered public job page discovered from the company website or public search.",
+                )
+            )
+
+        job_titles = self._extract_job_titles(snapshots)
+        if job_titles:
+            confidence = ConfidenceLevel.HIGH if len(job_titles) >= 3 else ConfidenceLevel.MEDIUM
             return ScoredSignal(
                 name="job_post_velocity",
-                value="Public company homepage appears blocked or inaccessible without login.",
-                confidence=ConfidenceLevel.LOW,
+                value=f"Public careers/search pages surface {len(job_titles)} open roles: {', '.join(job_titles[:4])}.",
+                confidence=confidence,
                 evidence=[
-                    f"Attempted to collect from {homepage_snapshot.final_url}.",
-                    "The rendered page contained a login, captcha, or anti-bot block and was not bypassed.",
+                    "Discovered public careers, jobs, or open-role pages from the company website and public search.",
+                    f"Extracted role titles from rendered public pages: {', '.join(job_titles[:6])}.",
                 ],
+                source_refs=source_refs,
+            )
+
+        accessible_page_count = sum(1 for snapshot in snapshots if not snapshot.blocked and snapshot.text)
+        confidence = ConfidenceLevel.MEDIUM if accessible_page_count else ConfidenceLevel.LOW
+        blocked_note = (
+            "The homepage was blocked, so the collector continued through standard careers paths and public search."
+            if homepage_snapshot.blocked
+            else "No job title patterns were visible in the rendered page text."
+        )
+        return ScoredSignal(
+            name="job_post_velocity",
+            value="Public careers/search pages were checked, but no explicit open role cards were visible.",
+            confidence=confidence,
+            evidence=[
+                f"Collected {accessible_page_count} accessible public careers-related page(s).",
+                blocked_note,
+            ],
+            source_refs=source_refs,
+        )
+
+    def collect_leadership_change_signal(self) -> ScoredSignal:
+        homepage_url = self._homepage_url()
+        homepage_ref = _public_source_ref(
+            title="Company homepage",
+            url=homepage_url,
+            note="Public company page used to discover press, news, and leadership pages.",
+        )
+        if self._should_skip_live_collection():
+            return ScoredSignal(
+                name="leadership_change",
+                value=f"Live leadership-change collection was skipped for synthetic domain {self.domain}.",
+                confidence=ConfidenceLevel.LOW,
+                evidence=["Synthetic test domains are intentionally not scraped against public providers."],
                 source_refs=[homepage_ref],
             )
 
+        homepage_snapshot = self._capture_public_page(homepage_url)
+        candidate_urls = self._standard_candidate_urls(
+            homepage_snapshot.final_url or homepage_url,
+            standard_paths=("/news", "/press", "/blog", "/company/news", "/company/press", "/about/news"),
+        )
+        if not homepage_snapshot.blocked:
+            candidate_urls.extend(
+                self._discover_candidate_urls(
+                    homepage_snapshot,
+                    standard_paths=(),
+                    keywords=("news", "press", "blog", "media", "updates", "announcements"),
+                )
+            )
+        search_results = self._search_public_web(
+            f'"{self.company_name}" appointed CTO CEO leadership news'
+        )
+        candidate_urls.extend(result_url for result_url, _ in search_results[:6])
+        snapshots = [] if homepage_snapshot.blocked else [homepage_snapshot]
+        source_refs = [homepage_ref]
+        if homepage_snapshot.blocked:
+            source_refs[0].note = "Company homepage was attempted, but it appeared blocked or inaccessible without bypass."
+        for result_url, result_title in search_results[:6]:
+            source_refs.append(
+                _public_source_ref(
+                    title=f"Public leadership search result: {result_title[:80]}",
+                    url=result_url,
+                    note="Public search result used to discover press, news, or leadership pages.",
+                )
+            )
+        for candidate_url in candidate_urls[:8]:
+            candidate_snapshot = self._capture_public_page(candidate_url)
+            snapshots.append(candidate_snapshot)
+            source_refs.append(
+                _public_source_ref(
+                    title="Public leadership/news page",
+                    url=candidate_snapshot.final_url,
+                    note="Rendered public news page discovered from the company website or public search.",
+                )
+            )
+
+        snippets = self._extract_leadership_snippets(snapshots)
+        if snippets:
+            explicit_change_terms = (
+                "appointed",
+                "named",
+                "joins as",
+                "promoted to",
+                "steps down",
+                "resigns",
+            )
+            confidence = (
+                ConfidenceLevel.HIGH
+                if any(term in snippets[0].lower() for term in explicit_change_terms) or len(snippets) >= 2
+                else ConfidenceLevel.MEDIUM
+            )
+            return ScoredSignal(
+                name="leadership_change",
+                value=f"Public news/search pages mention leadership context: {snippets[0]}",
+                confidence=confidence,
+                evidence=[
+                    "Discovered public news, press, or leadership pages from the company website and public search.",
+                    f"Matched leadership language in rendered page text: {snippets[0]}",
+                ],
+                source_refs=source_refs,
+            )
+
+        accessible_page_count = sum(1 for snapshot in snapshots if not snapshot.blocked and snapshot.text)
+        confidence = ConfidenceLevel.MEDIUM if accessible_page_count else ConfidenceLevel.LOW
+        return ScoredSignal(
+            name="leadership_change",
+            value="Public news/search pages were checked, but no explicit leadership change was visible.",
+            confidence=confidence,
+            evidence=[
+                f"Collected {accessible_page_count} accessible public news or press page(s).",
+                "No leadership appointment, promotion, resignation, or transition language was visible.",
+            ],
+            source_refs=source_refs,
+        )
+
+    def _legacy_collect_job_post_signal(self) -> ScoredSignal:
+        homepage_url = self._homepage_url()
+        homepage_ref = _public_source_ref(
+            title="Company homepage",
+            url=homepage_url,
+            note="Public company page used to discover careers and jobs links.",
+        )
+        homepage_snapshot = self._capture_public_page(homepage_url)
         candidate_urls = self._discover_candidate_urls(
             homepage_snapshot,
             standard_paths=("/careers", "/jobs", "/join-us", "/openings", "/company/careers"),
             keywords=("careers", "jobs", "open roles", "join us", "join-us", "apply"),
         )
+        search_results = self._search_public_web(f'"{self.company_name}" careers jobs open roles')
+        candidate_urls.extend(result_url for result_url, _ in search_results[:5])
         snapshots = [homepage_snapshot]
         source_refs = [homepage_ref]
         for candidate_url in candidate_urls[:4]:
@@ -347,7 +595,7 @@ class PublicSignalCollector:
             source_refs=source_refs,
         )
 
-    def collect_leadership_change_signal(self) -> ScoredSignal:
+    def _legacy_collect_leadership_change_signal(self) -> ScoredSignal:
         homepage_url = self._homepage_url()
         homepage_ref = _public_source_ref(
             title="Company homepage",
@@ -381,6 +629,10 @@ class PublicSignalCollector:
             standard_paths=("/news", "/press", "/blog", "/company/news", "/company/press", "/about/news"),
             keywords=("news", "press", "blog", "media", "updates", "announcements"),
         )
+        search_results = self._search_public_web(
+            f'"{self.company_name}" appointed CTO CEO leadership news'
+        )
+        candidate_urls.extend(result_url for result_url, _ in search_results[:5])
         snapshots = [homepage_snapshot]
         source_refs = [homepage_ref]
         for candidate_url in candidate_urls[:5]:
@@ -495,6 +747,29 @@ class PublicSignalCollector:
             blocked=snapshot.blocked,
         )
 
+    def _search_public_web(self, query: str) -> list[tuple[str, str]]:
+        search_url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+        request = Request(
+            search_url,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; TenaciousBot/1.0)"},
+        )
+        try:
+            with urlopen(request, timeout=self.timeout_ms / 1000) as response:
+                html = response.read().decode("utf-8", errors="replace")
+        except (HTTPError, URLError, TimeoutError):
+            return []
+
+        parser = _SearchResultParser()
+        parser.feed(html)
+        unique: list[tuple[str, str]] = []
+        seen: set[str] = set()
+        for href, title in parser.results:
+            if href in seen:
+                continue
+            seen.add(href)
+            unique.append((href, title))
+        return unique
+
     def _should_skip_live_collection(self) -> bool:
         return _is_synthetic_domain(self.domain)
 
@@ -503,6 +778,11 @@ class PublicSignalCollector:
 
     def _crunchbase_url(self) -> str:
         return f"https://www.crunchbase.com/organization/{_slugify(self.company_name)}"
+
+    def _standard_candidate_urls(self, base_url: str, standard_paths: tuple[str, ...]) -> list[str]:
+        parsed = urlparse(base_url)
+        origin = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else base_url.rstrip("/")
+        return [urljoin(origin + "/", path.lstrip("/")) for path in standard_paths]
 
     def _discover_candidate_urls(
         self,

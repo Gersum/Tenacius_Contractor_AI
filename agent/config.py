@@ -59,6 +59,7 @@ class Settings:
     app_env: str = "development"
     sink_mode: bool = True
     live_outbound_enabled: bool = False
+    use_seeded_demo_data: bool = False
     default_sdr_email: str = "delivery-lead@example.com"
 
     openrouter_api_key: str = ""
@@ -72,8 +73,16 @@ class Settings:
     hubspot_access_token: str = ""
     hubspot_portal_id: str = ""
 
+    calcom_base_url: str = "http://127.0.0.1:3001"
+    calcom_app_base_url: str = "http://127.0.0.1:3001"
+    calcom_api_base_url: str = "http://127.0.0.1:3003"
     calcom_api_key: str = ""
     calcom_event_type_slug: str = ""
+    calcom_api_version: str = "2026-02-25"
+    calcom_username: str = ""
+    calcom_webhook_secret: str = ""
+    calcom_booking_start: str = "2026-04-24T11:00:00Z"
+    calcom_fallback_enabled: bool = True
 
     resend_api_key: str = ""
     mailersend_api_key: str = ""
@@ -124,6 +133,7 @@ def get_settings() -> Settings:
         app_env=_env_get("APP_ENV", "development"),
         sink_mode=_env_bool("SINK_MODE", True),
         live_outbound_enabled=_env_bool("LIVE_OUTBOUND_ENABLED", False),
+        use_seeded_demo_data=_env_bool("USE_SEEDED_DEMO_DATA", False),
         default_sdr_email=_env_get("DEFAULT_SDR_EMAIL", "delivery-lead@example.com"),
         openrouter_api_key=_env_get("OPENROUTER_API_KEY", ""),
         openrouter_model=_env_get_nonempty("OPENROUTER_MODEL", "openai/gpt-4.1-mini"),
@@ -134,8 +144,22 @@ def get_settings() -> Settings:
         langfuse_host=_env_get("LANGFUSE_HOST", ""),
         hubspot_access_token=_env_get("HUBSPOT_ACCESS_TOKEN", ""),
         hubspot_portal_id=_env_get("HUBSPOT_PORTAL_ID", ""),
+        calcom_base_url=_env_get_nonempty("CALCOM_BASE_URL", "http://127.0.0.1:3001"),
+        calcom_app_base_url=_env_get_nonempty(
+            "CALCOM_APP_BASE_URL",
+            _env_get_nonempty("CALCOM_BASE_URL", "http://127.0.0.1:3001"),
+        ),
+        calcom_api_base_url=_env_get_nonempty(
+            "CALCOM_API_BASE_URL",
+            "http://127.0.0.1:3003",
+        ),
         calcom_api_key=_env_get("CALCOM_API_KEY", ""),
         calcom_event_type_slug=_env_get("CALCOM_EVENT_TYPE_SLUG", ""),
+        calcom_api_version=_env_get_nonempty("CALCOM_API_VERSION", "2026-02-25"),
+        calcom_username=_env_get("CALCOM_USERNAME", ""),
+        calcom_webhook_secret=_env_get("CALCOM_WEBHOOK_SECRET", ""),
+        calcom_booking_start=_env_get_nonempty("CALCOM_BOOKING_START", "2026-04-24T11:00:00Z"),
+        calcom_fallback_enabled=_env_bool("CALCOM_FALLBACK_ENABLED", True),
         resend_api_key=_env_get("RESEND_API_KEY", ""),
         mailersend_api_key=_env_get("MAILERSEND_API_KEY", ""),
         africastalking_api_key=_env_get("AFRICASTALKING_API_KEY", ""),

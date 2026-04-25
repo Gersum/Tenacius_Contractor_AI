@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_9fe90ce1a333",
+  "to_address": "elena@orrin-labs.example",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Elena,\n\nOrrin Labs closed a $14M Series B in February and currently has 11 open engineering roles, including AI-adjacent positions but no dedicated AI leadership publicly listed. I wonder if the AI leadership role is still being scoped or if it\u2019s deliberately distributed across the CTO remit?\n\nWe support companies like yours by providing experienced Python and data engineering squads that integrate with your existing teams, helping scale engineering output faster than in-house hiring alone.\n\nWould you be open to a 30-minute call next week to explore if this could be a fit?\n\nBest,\nElena\nResearch Partner, Tenacious Intelligence Corporation\ngettenacious.com",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_9fe90ce1a333_outbound.json",
+  "subject": "Context: your $14M Series B and the AI leadership role",
+  "sent_at": "2026-04-25T07:50:39.246313+00:00"
+}

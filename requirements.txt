@@ -1,2 +1,4 @@
-# This scaffold intentionally runs on the Python standard library only.
-# Integration dependencies can be added later when live provider wiring is enabled.
+# Root install for the local operator UI plus optional challenge integrations.
+
+langfuse>=3.0.0
+playwright>=1.52.0

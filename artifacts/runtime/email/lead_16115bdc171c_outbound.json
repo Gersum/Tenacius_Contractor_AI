@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_16115bdc171c",
+  "to_address": "alex.morgan@example.com",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Alex,\n\nI noticed Vercel currently has 113 open roles across Products, Core Platform, and Security. Companies in this phase often face challenges scaling engineering capacity quickly enough to meet project demands. We provide managed Python and data engineering support that integrates with your existing teams, helping to ease hiring bottlenecks without adding overhead.\n\nWould you be open to a brief 30-minute call next week to explore if this could be a fit for Vercel?\n\nBest,\nElena\nResearch Partner, Tenacious Intelligence Corporation\ngettenacious.com",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_16115bdc171c_outbound.json",
+  "subject": "Note on your 113 open engineering roles",
+  "sent_at": "2026-04-25T11:24:24.798903+00:00"
+}

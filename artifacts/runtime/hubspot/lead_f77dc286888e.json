@@ -1,0 +1,16 @@
+{
+  "record_id": "hs_lead_f77dc286888e",
+  "status": "upserted",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/hubspot/lead_f77dc286888e.json",
+  "fields": {
+    "company_name": "Orrin Labs Inc.",
+    "contact_email": "elena@orrin-labs.example",
+    "icp_segment": "recently_funded_series_ab",
+    "conversation_stage": "booked",
+    "qualification_status": "qualified",
+    "booking_url": "https://cal.example/tenacious-discovery/lead_f77dc286888e",
+    "ai_maturity_score": 2,
+    "recommended_hook": "Lead with the dedicated AI leadership gap (high confidence, two strong peer examples). Frame as a question \u2014 'is the AI leadership role still being scoped, or is it deliberately distributed across the CTO remit?' \u2014 not an assertion of a gap. Avoid the MLOps gap in the first email; it is medium confidence and the prospect may have the function inside their Data Platform Engineer JD."
+  },
+  "synced_at": "2026-04-25T06:18:20.812498+00:00"
+}

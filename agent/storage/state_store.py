@@ -45,6 +45,12 @@ class FileStateStore:
             "competitor_gap": str(competitor_target),
         }
 
+    def save_discovery_context(self, lead: LeadRecord, context_markdown: str) -> str:
+        target = self.runtime_root / "discovery" / f"{lead.lead_id}.md"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(context_markdown, encoding="utf-8")
+        return str(target)
+
     def save_current_run_manifest(
         self,
         lead: LeadRecord,

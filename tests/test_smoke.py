@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from agent.calendar.calcom import CalComBookingClient, InvalidCalComWebhookError
 from agent.channels.email.handler import (
     EmailDeliveryError,
     EmailHandler,
@@ -52,6 +53,42 @@ class SmokeTests(unittest.TestCase):
             self.assertTrue(Path(result.calendar_booking.preview_ref).exists())
             self.assertTrue(Path(result.hubspot_sync.preview_ref).exists())
             self.assertTrue(settings.resolved_trace_output_path.exists())
+            trace_rows = [
+                json.loads(line)
+                for line in settings.resolved_trace_output_path.read_text(encoding="utf-8").splitlines()
+            ]
+            self.assertTrue(any(row["outputs_ref"] for row in trace_rows))
+            self.assertTrue(all(row["started_at"] <= row["finished_at"] for row in trace_rows))
+
+    def test_seeded_tenacious_materials_drive_orrin_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            settings = Settings(
+                runtime_artifacts_path=str(temp_path / "runtime"),
+                trace_output_path=str(temp_path / "traces" / "agent_trace_log.jsonl"),
+                score_output_path=str(temp_path / "eval" / "score_log.json"),
+                use_seeded_demo_data=True,
+            )
+            logger = JsonlTraceLogger(settings.resolved_trace_output_path)
+            pipeline = ConversionEnginePipeline(settings=settings, trace_logger=logger)
+
+            lead = LeadRecord(
+                company_name="Orrin Labs Inc.",
+                domain="orrin-labs.example",
+                synthetic_contact_name="Elena Park",
+                synthetic_contact_email="elena@orrin-labs.example",
+                synthetic_contact_phone="+251911000000",
+            )
+
+            result = pipeline.run_for_prospect(lead)
+
+            self.assertEqual(result.hiring_signal_brief.segment_recommendation.value, "recently_funded_series_ab")
+            self.assertEqual(result.hiring_signal_brief.ai_maturity_score, 2)
+            self.assertIn("AI leadership gap", result.competitor_gap_brief.recommended_hook)
+            self.assertTrue((temp_path / "runtime" / "discovery" / f"{lead.lead_id}.md").exists())
+            discovery_text = (temp_path / "runtime" / "discovery" / f"{lead.lead_id}.md").read_text(encoding="utf-8")
+            self.assertIn("Discovery Call Context Brief", discovery_text)
+            self.assertIn("Orrin Labs", discovery_text)
 
     def test_enrichment_pipeline_collects_public_signals(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -102,7 +139,9 @@ class SmokeTests(unittest.TestCase):
                     link_texts=("Careers", "News"),
                 )
 
-            with patch.object(PublicSignalCollector, "_capture_public_page", new=fake_capture):
+            with patch.object(PublicSignalCollector, "_capture_public_page", new=fake_capture), patch.object(
+                PublicSignalCollector, "_search_public_web", return_value=[]
+            ):
                 brief = pipeline.build_hiring_signal_brief(lead)
 
             self.assertEqual(brief.funding_signal.confidence, ConfidenceLevel.HIGH)
@@ -112,6 +151,91 @@ class SmokeTests(unittest.TestCase):
             self.assertIn("Senior Data Engineer", brief.job_post_signal.value)
             self.assertIn("appointed Priya Rao as CTO", brief.leadership_change_signal.value)
             self.assertGreaterEqual(len(brief.source_refs), 4)
+
+    def test_public_signal_collector_uses_search_results_for_funding_when_crunchbase_is_blocked(self) -> None:
+        collector = PublicSignalCollector(company_name="ExampleCo", domain="exampleco.com")
+
+        def fake_capture(self, url: str) -> PublicPageSnapshot:
+            if "crunchbase.com" in url:
+                return PublicPageSnapshot(url=url, final_url=url, title="", text="", blocked=True)
+            return PublicPageSnapshot(
+                url=url,
+                final_url=url,
+                title="ExampleCo Funding News",
+                text="ExampleCo raised $20M in a Series B funding round to expand its data platform.",
+            )
+
+        with patch.object(PublicSignalCollector, "_capture_public_page", new=fake_capture), patch.object(
+            PublicSignalCollector,
+            "_search_public_web",
+            return_value=[("https://news.example.com/exampleco-series-b", "ExampleCo Series B")],
+        ):
+            signal = collector.collect_crunchbase_signal()
+
+        self.assertEqual(signal.confidence, ConfidenceLevel.MEDIUM)
+        self.assertIn("Public web search indicates funding activity", signal.value)
+        self.assertTrue(any("news.example.com" in ref.url for ref in signal.source_refs))
+
+    def test_competitor_gap_brief_uses_live_signals_for_non_seeded_lead(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            settings = Settings(
+                runtime_artifacts_path=str(temp_path / "runtime"),
+                trace_output_path=str(temp_path / "traces" / "agent_trace_log.jsonl"),
+                score_output_path=str(temp_path / "eval" / "score_log.json"),
+            )
+            pipeline = EnrichmentPipeline(settings=settings)
+
+            lead = LeadRecord(
+                company_name="ExampleCo",
+                domain="exampleco.com",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@exampleco.com",
+            )
+
+            def fake_capture(self, url: str) -> PublicPageSnapshot:
+                if "crunchbase.com" in url:
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo - Crunchbase",
+                        text="ExampleCo announced a Series B funding round and raised $20M from public investors.",
+                    )
+                if url.endswith("/careers"):
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo Careers",
+                        text="Open roles\nSenior Data Engineer\nProduct Manager\nStaff Software Engineer",
+                        link_texts=("Senior Data Engineer", "Product Manager", "Staff Software Engineer"),
+                    )
+                if url.endswith("/news"):
+                    return PublicPageSnapshot(
+                        url=url,
+                        final_url=url,
+                        title="ExampleCo News",
+                        text="ExampleCo appointed Priya Rao as CTO and named Jordan Lee as VP of Engineering.",
+                    )
+                return PublicPageSnapshot(
+                    url=url,
+                    final_url=url,
+                    title="ExampleCo",
+                    text="Careers\nNews\nWe are hiring across engineering and product.",
+                    links=("https://exampleco.com/careers", "https://exampleco.com/news"),
+                    link_texts=("Careers", "News"),
+                )
+
+            with patch.object(PublicSignalCollector, "_capture_public_page", new=fake_capture), patch.object(
+                PublicSignalCollector, "_search_public_web", return_value=[]
+            ):
+                hiring_brief = pipeline.build_hiring_signal_brief(lead)
+                competitor_brief = pipeline.build_competitor_gap_brief(lead, hiring_brief)
+
+            self.assertEqual(competitor_brief.top_quartile_companies, [])
+            self.assertIn("Live mode", competitor_brief.peer_group_definition)
+            self.assertIn("ExampleCo", competitor_brief.recommended_hook)
+            self.assertNotIn("Orrin", competitor_brief.recommended_hook)
+            self.assertEqual(len(competitor_brief.source_refs), len(hiring_brief.source_refs))
 
     def test_tau_runner_writes_placeholder_logs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -125,6 +249,44 @@ class SmokeTests(unittest.TestCase):
             self.assertEqual(len(summaries), 2)
             self.assertTrue((temp_path / "eval" / "score_log.json").exists())
             self.assertTrue((temp_path / "eval" / "trace_log.jsonl").exists())
+
+    def test_tau_runner_derives_scores_from_completed_trace_log(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            trace_path = temp_path / "eval" / "trace_log.jsonl"
+            trace_path.parent.mkdir(parents=True, exist_ok=True)
+            rows = [
+                {
+                    "agent_cost": 0.01,
+                    "domain": "retail",
+                    "duration": 10.0,
+                    "reward": 1.0,
+                    "simulation_id": "sim_1",
+                    "task_id": "1",
+                    "termination_reason": "user_stop",
+                },
+                {
+                    "agent_cost": 0.03,
+                    "domain": "retail",
+                    "duration": 20.0,
+                    "reward": 0.0,
+                    "simulation_id": "sim_2",
+                    "task_id": "2",
+                    "termination_reason": "user_stop",
+                },
+            ]
+            trace_path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+            runner = TauBenchRunner(
+                score_output_path=temp_path / "eval" / "score_log.json",
+                trace_output_path=trace_path,
+            )
+
+            summaries = runner.write_score_from_trace_log(reproduction_simulation_count=1)
+
+            self.assertEqual(summaries[0]["run_label"], "dev_baseline")
+            self.assertEqual(summaries[0]["pass_at_1"], 0.5)
+            self.assertEqual(summaries[1]["run_label"], "reproduction_check")
+            self.assertEqual(summaries[1]["evaluated_simulations"], 1)
 
     def test_email_handler_routes_inbound_reply_webhook_to_callback(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -258,6 +420,129 @@ class SmokeTests(unittest.TestCase):
                 handler.handle_webhook({"message_id": "sms_bad"})
 
             self.assertTrue((runtime_dir / "sms" / "webhook_sms_bad.json").exists())
+
+    def test_calcom_client_falls_back_when_api_key_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3000",
+                app_base_url="http://127.0.0.1:3000",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=True,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+            )
+
+            booking = client.book_discovery_call(lead, "sales@tenacious.example")
+            payload = json.loads(Path(booking.preview_ref).read_text(encoding="utf-8"))
+
+            self.assertEqual(booking.mode, "fallback")
+            self.assertEqual(booking.status, "simulated")
+            self.assertIn("CALCOM_API_KEY not configured", booking.error_message)
+            self.assertEqual(payload["booking"]["mode"], "fallback")
+            self.assertIn("fallback_reason", payload["metadata"])
+
+    def test_calcom_client_posts_to_self_hosted_api_when_configured(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3000",
+                app_base_url="http://127.0.0.1:3000",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="cal_test_123",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="demo-host",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=False,
+            )
+            lead = LeadRecord(
+                company_name="Northstar Analytics",
+                domain="northstaranalytics.example",
+                synthetic_contact_name="Amina Bekele",
+                synthetic_contact_email="amina@northstaranalytics.example",
+                synthetic_contact_phone="+251911000000",
+            )
+
+            class FakeResponse:
+                def __enter__(self) -> "FakeResponse":
+                    return self
+
+                def __exit__(self, exc_type, exc, tb) -> None:
+                    return None
+
+                def read(self) -> bytes:
+                    return json.dumps(
+                        {
+                            "status": "success",
+                            "data": {
+                                "uid": "booking_uid_123",
+                                "start": "2026-04-24T11:00:00Z",
+                                "bookingUrl": "http://127.0.0.1:3000/booking/booking_uid_123",
+                            },
+                        }
+                    ).encode("utf-8")
+
+            with patch("agent.calendar.calcom.request.urlopen", return_value=FakeResponse()) as mocked_urlopen:
+                booking = client.book_discovery_call(lead, "sales@tenacious.example")
+
+            sent_request = mocked_urlopen.call_args.args[0]
+            headers = {key.lower(): value for key, value in sent_request.header_items()}
+            self.assertEqual(sent_request.full_url, "http://127.0.0.1:3003/v2/bookings")
+            self.assertEqual(headers["authorization"], "Bearer cal_test_123")
+            self.assertEqual(headers["cal-api-version"], "2026-02-25")
+            request_body = json.loads(sent_request.data.decode("utf-8"))
+            self.assertEqual(request_body["eventTypeSlug"], "tenacious-discovery")
+            self.assertEqual(request_body["username"], "demo-host")
+            self.assertEqual(request_body["attendee"]["email"], "amina@northstaranalytics.example")
+            self.assertEqual(booking.mode, "api")
+            self.assertEqual(booking.status, "confirmed")
+            self.assertEqual(booking.booking_url, "http://127.0.0.1:3000/booking/booking_uid_123")
+
+    def test_calcom_webhook_validates_secret_and_routes_events(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime_dir = Path(temp_dir)
+            received_events = []
+            client = CalComBookingClient(
+                runtime_dir=runtime_dir,
+                base_url="http://127.0.0.1:3000",
+                app_base_url="http://127.0.0.1:3000",
+                api_base_url="http://127.0.0.1:3003",
+                api_key="",
+                event_type_slug="tenacious-discovery",
+                api_version="2026-02-25",
+                host_username="",
+                default_start="2026-04-24T11:00:00Z",
+                fallback_enabled=True,
+                webhook_secret="topsecret",
+                inbound_handler=received_events.append,
+            )
+
+            event = client.handle_webhook(
+                {"triggerEvent": "BOOKING_CREATED", "bookingUid": "booking_uid_123"},
+                signature="topsecret",
+            )
+
+            self.assertEqual(event.status, "booked")
+            self.assertEqual(len(received_events), 1)
+            self.assertTrue((runtime_dir / "calcom" / "webhook_booking_uid_123.json").exists())
+
+            with self.assertRaises(InvalidCalComWebhookError):
+                client.handle_webhook(
+                    {"triggerEvent": "BOOKING_CANCELLED", "bookingUid": "booking_uid_123"},
+                    signature="wrongsecret",
+                )
 
 
 if __name__ == "__main__":

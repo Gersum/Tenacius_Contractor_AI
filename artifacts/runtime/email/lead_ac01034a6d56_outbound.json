@@ -1,0 +1,11 @@
+{
+  "delivery_id": "email_lead_ac01034a6d56",
+  "to_address": "alex.morgan@example.com",
+  "provider": "resend_sink",
+  "status": "sent_to_sink",
+  "sink_mode": true,
+  "body": "Alex,\n\nI noticed Vercel recently shared insights on executive decision-making with COO Jeanne Grosser discussing what sets extraordinary leaders apart. Companies in this phase often revisit their engineering vendor mix to align with evolving leadership priorities. We can explore potential fit for Python and data engineering support, with a human Tenacious delivery lead guiding detailed staffing decisions. Would you be open to a brief 30-minute call next week to discuss this further?\n\nBest,\nMarcus\nResearch Partner, Tenacious\ngettenacious.com",
+  "preview_ref": "/Users/gersumasfaw/Downloads/week_10/artifacts/runtime/email/lead_ac01034a6d56_outbound.json",
+  "subject": "Congrats on the leadership perspectives at Vercel",
+  "sent_at": "2026-04-25T11:15:18.506850+00:00"
+}
