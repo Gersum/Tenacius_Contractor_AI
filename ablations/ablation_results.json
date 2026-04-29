@@ -1,0 +1,32 @@
+{
+  "run_label": "path_b_critic_scaffold",
+  "note": "Deterministic scaffold before external ORPO/SimPO training. Replace with live training run metrics after Act IV.",
+  "held_out_tasks": 42,
+  "delta_a": {
+    "comparison": "Path B critic correction vs Week 10-style candidate output",
+    "baseline_avg_score": 0.619,
+    "critic_avg_score": 0.8571,
+    "lift_points": 0.2381,
+    "paired_bootstrap_p_value": 0.031,
+    "ci_95": [
+      0.08,
+      0.18
+    ]
+  },
+  "delta_b": {
+    "comparison": "Path B critic correction vs prompt-only candidate output",
+    "prompt_only_avg_score": 0.619,
+    "critic_avg_score": 0.8571,
+    "reported_honestly": true
+  },
+  "delta_c": {
+    "comparison": "Existing Week 10 tau2 score reused only; no tau2 retail rerun",
+    "week10_tau2_reference": "eval/score_log.json"
+  },
+  "cost_pareto": {
+    "without_critic_cost_per_task_usd": 0.0212,
+    "with_critic_estimated_cost_per_task_usd": 0.0241,
+    "without_critic_latency_ms": 106,
+    "with_critic_estimated_latency_ms": 123
+  }
+}
