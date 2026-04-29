@@ -1,6 +1,24 @@
-# Tenacious Conversion Engine
+# Tenacious Conversion Engine and Tenacious-Bench
 
-This repository contains the Week 10 build for the Tenacious Consulting and Outsourcing conversion engine challenge. The current implementation is centered on the challenge's email-first channel hierarchy: enrichment runs before outreach, email is the primary first touch, SMS is reserved for warm-lead scheduling, and the final delivery step is a human discovery call supported by a generated context brief.
+This repository contains two connected deliverables:
+
+- the Week 10 Tenacious conversion engine thin slice
+- the Week 11 `Tenacious-Bench v0.1` benchmark and Path B critic scaffold
+
+The conversion engine is centered on the challenge's email-first channel hierarchy: enrichment runs before outreach, email is the primary first touch, SMS is reserved for warm-lead scheduling, and the final delivery step is a human discovery call supported by a generated context brief. The benchmark layer turns those Tenacious-specific failure modes into a reproducible dataset, evaluator, and training scaffold.
+
+## Current Status
+
+Complete at the current interim checkpoint:
+
+- Week 10 local thin-slice orchestration, artifacts, traces, and demo flow
+- Week 11 benchmark partitions, evaluator, contamination check, report, and training-data scaffold
+
+Still in progress:
+
+- live Path B ORPO / SimPO training run
+- completed human inter-rater agreement relabel cycle
+- live eval-tier calibration on the held-out slice
 
 ## Architecture
 
@@ -77,6 +95,7 @@ Optional packages currently referenced:
 ## Directory Index
 
 - `agent`: application code for orchestration, enrichment, channel handlers, CRM/calendar clients, policies, storage, and trace logging.
+- `generation_scripts`: reproducible Week 11 benchmark authoring pipeline, routing policy, and prompt assets.
 - `artifacts`: runtime outputs produced by the operator UI and local pipeline runs, including email, SMS, CRM, calendar, state, and brief artifacts.
 - `briefs`: committed sample brief outputs used for review and schema comparison.
 - `data`: Tenacious source material, schemas, policy docs, seeded sales materials, and challenge-approved baseline numbers.
@@ -84,7 +103,12 @@ Optional packages currently referenced:
 - `eval`: imported or regenerated benchmark traces, baseline summaries, and score logs.
 - `infra`: local infrastructure entry points, including the Cal.com Docker compose stack and setup notes.
 - `probes`: adversarial probe definitions, failure taxonomy, and target failure mode notes.
+- `reports`: generated Week 11 PDF reporting artifacts and the report builder.
+- `synthesis_memos`: common-reading memos used to justify benchmark and critic design choices.
+- `tenacious_bench_v0_1`: Week 11 dataset partitions, committed examples, and contamination report.
 - `tests`: smoke tests covering the thin-slice pipeline and key integrations.
+- `training`: Path B critic training scaffold.
+- `training_data`: preference-pair dataset derived from the train partition.
 - `visualization`: local operator UI server and browser-facing evidence explorer.
 - `ablation_results.json`: held-out evaluation summary for the TAMSG method and comparison runs.
 - `baseline.md`: human-readable snapshot of the imported τ² retail baseline.
@@ -220,6 +244,39 @@ That guide walks through the exact browser steps to demonstrate:
 - Evidence graph: [evidence_graph.json](/Users/gersumasfaw/Downloads/week_10/evidence_graph.json)
 - Interim report: [docs/interim_submission_report.md](/Users/gersumasfaw/Downloads/week_10/docs/interim_submission_report.md)
 
+## Week 11 Tenacious-Bench
+
+The Week 11 benchmark scaffold is now available in [tenacious_bench_v0_1](/Users/gersumasfaw/Downloads/week_10/tenacious_bench_v0_1). It contains 210 tasks split into train, dev, and held-out partitions, plus deterministic scoring and contamination checks in [eval/tenacious_bench](/Users/gersumasfaw/Downloads/week_10/eval/tenacious_bench).
+
+Useful commands:
+
+```bash
+python3 generation_scripts/build_tenacious_bench.py
+python3 -m eval.tenacious_bench.scoring_evaluator tenacious_bench_v0_1/dev/tasks.jsonl
+python3 -m eval.tenacious_bench.contamination_check
+python3 training/train_path_b_critic.py
+```
+
+To spend OpenRouter budget on the `multi_llm_synthesis` slice, run:
+
+```bash
+TENACIOUS_BENCH_USE_OPENROUTER=true python3 generation_scripts/build_tenacious_bench.py
+```
+
+`trace_derived` tasks intentionally do not call an LLM because they are built from local Week 10 traces.
+
+Week 11 documentation lives at [audit_memo.md](/Users/gersumasfaw/Downloads/week_10/audit_memo.md), [methodology.md](/Users/gersumasfaw/Downloads/week_10/methodology.md), [datasheet.md](/Users/gersumasfaw/Downloads/week_10/datasheet.md), [inter_rater_agreement.md](/Users/gersumasfaw/Downloads/week_10/inter_rater_agreement.md), [methodology_rationale.md](/Users/gersumasfaw/Downloads/week_10/methodology_rationale.md), and [synthesis_memos](/Users/gersumasfaw/Downloads/week_10/synthesis_memos/01_synthetic_data_lessons.md).
+
+Primary benchmark artifacts:
+
+- [audit_memo.md](/Users/gersumasfaw/Downloads/week_10/audit_memo.md)
+- [datasheet.md](/Users/gersumasfaw/Downloads/week_10/datasheet.md)
+- [methodology.md](/Users/gersumasfaw/Downloads/week_10/methodology.md)
+- [eval/tenacious_bench/schema.json](/Users/gersumasfaw/Downloads/week_10/eval/tenacious_bench/schema.json)
+- [eval/tenacious_bench/scoring_evaluator.py](/Users/gersumasfaw/Downloads/week_10/eval/tenacious_bench/scoring_evaluator.py)
+- [generation_scripts/build_tenacious_bench.py](/Users/gersumasfaw/Downloads/week_10/generation_scripts/build_tenacious_bench.py)
+- [reports/artifacts/week11_bench_report.pdf](/Users/gersumasfaw/Downloads/week_10/reports/artifacts/week11_bench_report.pdf)
+
 ## Honest Status
 
 What is strong right now:
@@ -235,6 +292,15 @@ What still depends on real external accounts or additional benchmark work:
 - live Resend or MailerSend delivery
 - live Africa's Talking round-trips
 - live HubSpot Developer Sandbox writes
+
+## What Is Next
+
+High-level next steps:
+
+1. complete the 30-task human inter-rater cycle and revise any weak rubric dimensions
+2. run a live small-model Path B training job
+3. evaluate the trained critic on the sealed held-out split
+4. publish dataset, report, and community write-up once the held-out pass is frozen
 - verified live Cal.com calendar writes against a running local Cal.com web app plus a separate API service in this workspace
 - verified Langfuse cloud traces
 - Acts III through V deliverables such as probes, ablations, held-out traces, and final memo
