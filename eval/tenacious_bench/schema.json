@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tenacious-training.dev/schemas/tenacious_bench_v0_1.schema.json",
+  "title": "Tenacious-Bench v0.1 Task",
+  "type": "object",
+  "required": [
+    "task_id",
+    "partition",
+    "source_mode",
+    "difficulty",
+    "failure_dimension",
+    "input",
+    "candidate_output",
+    "ground_truth",
+    "rubric",
+    "metadata"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "pattern": "^tb-[0-9]{4}$" },
+    "partition": { "type": "string", "enum": ["train", "dev", "held_out"] },
+    "source_mode": {
+      "type": "string",
+      "enum": ["trace_derived", "programmatic", "multi_llm_synthesis", "hand_authored_adversarial"]
+    },
+    "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+    "failure_dimension": {
+      "type": "string",
+      "enum": [
+        "tone_style_drift",
+        "hiring_signal_overclaiming",
+        "bench_overcommitment",
+        "competitor_gap_overclaiming",
+        "public_signal_reliability",
+        "scheduling_handoff_correctness",
+        "icp_misclassification"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "required": [
+        "prospect",
+        "hiring_signal_brief",
+        "bench_summary_excerpt",
+        "prior_thread",
+        "target_channel"
+      ],
+      "properties": {
+        "prospect": {
+          "type": "object",
+          "required": ["company_name", "domain", "contact_role"],
+          "properties": {
+            "company_name": { "type": "string" },
+            "domain": { "type": "string" },
+            "contact_role": { "type": "string" }
+          }
+        },
+        "hiring_signal_brief": { "type": "object" },
+        "competitor_gap_brief": { "type": ["object", "null"] },
+        "bench_summary_excerpt": { "type": "object" },
+        "prior_thread": { "type": "array", "items": { "type": "string" } },
+        "target_channel": { "type": "string", "enum": ["email", "sms", "calendar", "crm_note"] }
+      }
+    },
+    "candidate_output": { "type": "string" },
+    "ground_truth": {
+      "type": "object",
+      "required": ["required_claims", "forbidden_claims", "allowed_evidence_ids", "expected_action"],
+      "properties": {
+        "required_claims": { "type": "array", "items": { "type": "string" } },
+        "forbidden_claims": { "type": "array", "items": { "type": "string" } },
+        "allowed_evidence_ids": { "type": "array", "items": { "type": "string" } },
+        "expected_action": { "type": "string" }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "required": ["deterministic_checks", "judge_dimensions"],
+      "properties": {
+        "deterministic_checks": { "type": "array", "items": { "type": "string" } },
+        "judge_dimensions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "source_refs",
+        "synthesis_model",
+        "judge_model",
+        "created_at",
+        "contamination_hash"
+      ],
+      "properties": {
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "synthesis_model": { "type": "string" },
+        "judge_model": { "type": "string" },
+        "created_at": { "type": "string" },
+        "contamination_hash": { "type": "string" }
+      }
+    }
+  }
+}
+
