@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-04-28T00:00:00Z",
+  "total_tasks": 210,
+  "source_mode_counts": {
+    "trace_derived": 63,
+    "programmatic": 63,
+    "multi_llm_synthesis": 53,
+    "hand_authored_adversarial": 31
+  },
+  "partition_counts": {
+    "train": 105,
+    "dev": 63,
+    "held_out": 42
+  },
+  "source_partition_counts": {
+    "hand_authored_adversarial:held_out": 31,
+    "multi_llm_synthesis:dev": 42,
+    "multi_llm_synthesis:held_out": 11,
+    "programmatic:dev": 21,
+    "programmatic:train": 42,
+    "trace_derived:train": 63
+  },
+  "reproducibility_seed": 20260428,
+  "model_route_policy": {
+    "trace_derived": "local Week 10 traces, no LLM",
+    "programmatic": "local templates plus seeded Tenacious artifacts",
+    "multi_llm_synthesis": "OpenRouter dev-tier generation when TENACIOUS_BENCH_USE_OPENROUTER=true and OPENROUTER_API_KEY is set; rotates across ['openai/gpt-4.1-mini', 'qwen/qwen3-32b']; otherwise deterministic stand-ins for reproducible local builds",
+    "hand_authored_adversarial": "manual variants derived from probe library",
+    "judge_filter": "deterministic evaluator first; per-row judge dimensions are input_coherence, ground_truth_verifiability, and rubric_clarity, each with threshold >= 4; eval-tier calibration family reserved to ['anthropic/claude-3.7-sonnet']",
+    "preference_leakage_policy": "no single model family should both generate and judge the same task",
+    "prompts": {
+      "author_prompt": "generation_scripts/prompts/synthesis_author_prompt.md",
+      "judge_filter_prompt": "generation_scripts/prompts/judge_filter_prompt.md"
+    }
+  }
+}

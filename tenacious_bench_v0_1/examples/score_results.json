@@ -1,0 +1,47 @@
+[
+  {
+    "task_id": "tb-0001",
+    "score": 0.8,
+    "passed": true,
+    "checks": {
+      "required_claims_present": true,
+      "forbidden_claims_absent": true,
+      "expected_action_present": false,
+      "allowed_evidence_only": true,
+      "style_terms_absent": true
+    },
+    "notes": [
+      "Failed expected_action_present"
+    ]
+  },
+  {
+    "task_id": "tb-0064",
+    "score": 0.8,
+    "passed": true,
+    "checks": {
+      "required_claims_present": true,
+      "forbidden_claims_absent": true,
+      "expected_action_present": false,
+      "allowed_evidence_only": true,
+      "style_terms_absent": true
+    },
+    "notes": [
+      "Failed expected_action_present"
+    ]
+  },
+  {
+    "task_id": "tb-0180",
+    "score": 0.8,
+    "passed": true,
+    "checks": {
+      "required_claims_present": true,
+      "forbidden_claims_absent": true,
+      "expected_action_present": false,
+      "allowed_evidence_only": true,
+      "source_uncertainty_respected": true
+    },
+    "notes": [
+      "Failed expected_action_present"
+    ]
+  }
+]

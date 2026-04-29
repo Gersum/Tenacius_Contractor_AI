@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "train_task_count": 105,
+  "held_out_task_count": 42,
+  "max_8gram_overlap_count": 0,
+  "max_token_cosine_similarity": 0.0,
+  "embedding_similarity_threshold": 0.85,
+  "closest_pair": null,
+  "time_shift_failures": [],
+  "report_hash": "afd1f354b99d54718c08b120aa6fa58ccae31abd56ba01971b7590bb154669e0"
+}

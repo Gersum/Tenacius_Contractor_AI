@@ -760,7 +760,7 @@ class SmokeTests(unittest.TestCase):
                 event_type_id=1,
                 api_version="2026-02-25",
                 host_username="demo-host",
-                default_start="2026-04-28T12:00:00Z",
+                default_start="2027-04-28T12:00:00Z",
                 fallback_enabled=False,
             )
             lead = LeadRecord(
@@ -781,7 +781,7 @@ class SmokeTests(unittest.TestCase):
                     return json.dumps(
                         {
                             "uid": "legacy_booking_uid_retry",
-                            "startTime": "2026-04-28T09:00:00.000Z",
+                            "startTime": "2027-04-28T09:00:00.000Z",
                             "status": "ACCEPTED",
                         }
                     ).encode("utf-8")
@@ -823,8 +823,8 @@ class SmokeTests(unittest.TestCase):
             )
             first_legacy_body = json.loads(mocked_urlopen.call_args_list[3].args[0].data.decode("utf-8"))
             second_legacy_body = json.loads(mocked_urlopen.call_args_list[4].args[0].data.decode("utf-8"))
-            self.assertEqual(first_legacy_body["start"], "2026-04-28T12:00:00Z")
-            self.assertEqual(second_legacy_body["start"], "2026-04-28T09:00:00Z")
+            self.assertEqual(first_legacy_body["start"], "2027-04-28T12:00:00Z")
+            self.assertEqual(second_legacy_body["start"], "2027-04-28T09:00:00Z")
             self.assertEqual(booking.booking_id, "legacy_booking_uid_retry")
 
     def test_calcom_webhook_validates_secret_and_routes_events(self) -> None:

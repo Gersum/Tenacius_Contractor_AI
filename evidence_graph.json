@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T06:25:53Z",
+  "generated_at": "2026-04-28T00:00:00Z",
   "claims": [
     {
       "claim_id": "tau2_dev_pass_at_1",
@@ -27,14 +27,6 @@
       "source_refs": [
         "method.md",
         "ablation_results.json"
-      ]
-    },
-    {
-      "claim_id": "acv_floor",
-      "claim": "Revised talent-outsourcing ACV floor of $[ACV_MIN].",
-      "value": "[ACV_MIN]",
-      "source_refs": [
-        "data/tenacious_sales_data/seed/baseline_numbers.md"
       ]
     },
     {
@@ -84,6 +76,61 @@
         "artifacts/traces/agent_trace_log.jsonl"
       ],
       "recompute_rule": "read lead_id from artifacts/runtime/current-run.json"
+    },
+    {
+      "claim_id": "tenacious_bench_task_count",
+      "claim": "Tenacious-Bench v0.1 contains 210 tasks.",
+      "value": 210,
+      "source_refs": [
+        "tenacious_bench_v0_1/train/tasks.jsonl",
+        "tenacious_bench_v0_1/dev/tasks.jsonl",
+        "tenacious_bench_v0_1/held_out/tasks.jsonl",
+        "generation_scripts/generation_log.json"
+      ],
+      "recompute_rule": "sum line counts across train, dev, and held_out task files"
+    },
+    {
+      "claim_id": "tenacious_bench_partition_split",
+      "claim": "Tenacious-Bench v0.1 uses 105 train, 63 dev, and 42 held-out tasks.",
+      "value": {
+        "train": 105,
+        "dev": 63,
+        "held_out": 42
+      },
+      "source_refs": [
+        "tenacious_bench_v0_1/train/tasks.jsonl",
+        "tenacious_bench_v0_1/dev/tasks.jsonl",
+        "tenacious_bench_v0_1/held_out/tasks.jsonl"
+      ],
+      "recompute_rule": "wc -l tenacious_bench_v0_1/*/tasks.jsonl"
+    },
+    {
+      "claim_id": "path_b_preference_pair_count",
+      "claim": "Path B training data contains 105 preference pairs.",
+      "value": 105,
+      "source_refs": [
+        "training_data/path_b_preference_pairs.jsonl"
+      ],
+      "recompute_rule": "line count of training_data/path_b_preference_pairs.jsonl"
+    },
+    {
+      "claim_id": "tenacious_bench_contamination_passed",
+      "claim": "The Tenacious-Bench v0.1 contamination report passes with zero 8-gram overlap and max token-cosine similarity below 0.85.",
+      "value": true,
+      "source_refs": [
+        "tenacious_bench_v0_1/contamination_check.json"
+      ],
+      "recompute_rule": "python3 -m eval.tenacious_bench.contamination_check"
+    },
+    {
+      "claim_id": "path_b_critic_scaffold_lift",
+      "claim": "The deterministic Path B critic scaffold reports positive held-out lift before live ORPO/SimPO training.",
+      "value": "see ablations/ablation_results.json:delta_a",
+      "source_refs": [
+        "ablations/ablation_results.json",
+        "ablations/held_out_traces.jsonl"
+      ],
+      "recompute_rule": "python3 generation_scripts/build_tenacious_bench.py"
     }
   ]
 }
