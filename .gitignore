@@ -4,3 +4,4 @@ __pycache__/
 *.log
 latency_calc.py
 stats.py
+.env
