@@ -20,6 +20,19 @@ That points away from training a new generator first. The more useful interventi
 
 Direct Preference Optimization establishes preference-pair training as a practical alternative to reward-model-heavy RLHF. ORPO and SimPO are attractive here because they reduce reference-model overhead and fit the challenge's small compute envelope. Prometheus 2 supports the idea that small evaluator models can be specialized for domain-specific judgment when the rubric is explicit.
 
+Li et al., 2025 also matters for the generation-and-judging policy used here. The practical lesson from that preference-leakage line of work is that the same model family should not both author and judge the same synthesized task, because apparent agreement can be inflated by shared stylistic priors rather than true rubric fidelity. That is why this repo separates synthesis roles from judge-filter roles and preserves `preference_leakage_control` metadata in the preference-pair file.
+
+The paper-to-design mapping is:
+
+- **ORPO / SimPO**: small-budget preference optimization is a good fit for a lightweight Path B critic.
+- **Prometheus 2**: evaluator models become more useful when the judgment rubric is explicit and narrow.
+- **Li et al., 2025**: generation and judging should be family-separated to reduce preference leakage and avoid overstating model quality.
+
+Alternative paths were considered and dismissed for evidence-based reasons:
+
+- **Path A** was not selected because the Week 10 traces already show a functioning generator skeleton from enrichment through booking and CRM sync. The failure surface was inconsistent rule-following inside fluent drafts, not the inability to generate coherent outputs at all.
+- **Path C** was not selected because the dominant Week 10 errors were localized output failures, such as over-claiming, tone drift, and handoff mistakes, rather than long-horizon trajectory failures requiring a step-level process reward model.
+
 ## Training Data
 
 The train partition is converted into `training_data/path_b_preference_pairs.jsonl`. Each pair contains:
@@ -33,4 +46,3 @@ The train partition is converted into `training_data/path_b_preference_pairs.jso
 ## Deployment Hypothesis
 
 The critic should be used as a rejection-sampling or rollback layer. If the critic flags a draft below threshold, the production agent should rewrite or escalate instead of sending.
-
