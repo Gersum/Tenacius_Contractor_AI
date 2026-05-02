@@ -252,6 +252,21 @@ That guide walks through the exact browser steps to demonstrate:
 
 The Week 11 benchmark scaffold is now available in [tenacious_bench_v0_1](/Users/gersumasfaw/Downloads/week_10/tenacious_bench_v0_1). It contains 210 tasks split into train, dev, and held-out partitions, plus deterministic scoring and contamination checks in [eval/tenacious_bench](/Users/gersumasfaw/Downloads/week_10/eval/tenacious_bench).
 
+### Quickstart
+
+The fastest way to reproduce the current benchmark package locally is:
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 generation_scripts/build_tenacious_bench.py
+python3 -m eval.tenacious_bench.scoring_evaluator tenacious_bench_v0_1/dev/tasks.jsonl
+python3 tools/compute_inter_rater_agreement.py
+```
+
+That sequence reproduces the committed dataset partitions, deterministic evaluator summary, and inter-rater agreement matrix. The published dataset can also be inspected directly on Hugging Face:
+
+- https://huggingface.co/datasets/recordabebe/tenacious_bench_v0_1
+
 Useful commands:
 
 ```bash
@@ -291,6 +306,16 @@ Primary benchmark artifacts:
 - HuggingFace model URL: not required for Path B at current state
 - Blog post URL: [Tenacious-Bench: A Sales-Agent Benchmark for Public-Signal Grounding, Tone, and Handoff Reliability](https://medium.com/@recordabebe2/tenacious-bench-a-sales-agent-benchmark-for-public-signal-grounding-tone-and-handoff-reliability-b4feef96b2f3)
 - Community engagement URL: [τ²-Bench issue #291](https://github.com/sierra-research/tau2-bench/issues/291)
+
+## License
+
+This repository is licensed under `CC-BY-4.0`. See [LICENSE](/Users/gersumasfaw/Downloads/week_10/LICENSE:1).
+
+## Credits
+
+- Benchmark author and maintainer: `@recordabebe`
+- Workflow domain framing: Tenacious-style B2B outbound reliability
+- External publication surfaces: Hugging Face dataset card, Medium write-up, and τ²-Bench issue discussion
 
 ## Honest Status
 

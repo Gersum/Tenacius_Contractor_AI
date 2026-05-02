@@ -101,11 +101,23 @@ Out-of-scope uses:
 - ranking unrelated sales domains without adapting the rubric
 - recovering real prospect identities or private commercial details
 
+## 5a. Limitations and Biases
+
+The benchmark has several material limitations that constrain how the scores should be read.
+
+First, the dataset is synthetic even when it is trace-derived. That makes it reproducible and privacy-safe, but it can also over-reward systems that learn the benchmark's cleaner structure rather than the messier noise profile of real prospect traffic.
+
+Second, the benchmark is domain-skewed on purpose. It is tuned to Tenacious-style B2B outreach, qualification, and scheduling handoff behavior. That focus improves relevance for this workflow, but it also means strong performance here should not be generalized automatically to unrelated sales, support, or generic tool-use tasks.
+
+Third, public-signal grounding is lossy. Hiring activity, layoffs, leadership changes, and competitor gaps are all inferred from public traces rather than private account context. That can over-reward cautious generic grounding and under-reward sharper personalization that would be justified by fresher internal context or real relationship history.
+
+Fourth, the benchmark does not fully capture downstream business quality. A message can score well on wording, honesty, and handoff mechanics while still producing a low-value meeting or a weak pipeline outcome. That limitation is especially important when interpreting any headline result as a business claim.
+
 ## 6. Distribution
 
 Recommended release license: `CC-BY-4.0`.
 
-Rationale: the benchmark is synthetic, reproducible, and intended for research-style reuse, but attribution should remain attached because the benchmark framing, schema design, and Tenacious-specific failure taxonomy are substantial authored work. Public release should include the dataset, `schema.json`, `scoring_evaluator.py`, contamination report, generation scripts, and this datasheet.
+Rationale: the benchmark is synthetic, reproducible, and intended for research-style reuse, but attribution should remain attached because the benchmark framing, schema design, and Tenacious-specific failure taxonomy are substantial authored work. Public release should include the dataset, `schema.json`, `scoring_evaluator.py`, contamination report, generation scripts, and this datasheet. The current public artifact set does include the dataset card, datasheet, methodology, audit memo, evidence graph, and benchmark-generation scaffolding; the published Hugging Face dataset intentionally omits the sealed `held_out` split by default.
 
 ## 7. Maintenance
 
@@ -117,5 +129,7 @@ The dataset should evolve by:
 - replacing deterministic multi-LLM stand-ins with real routed synthesis logs where budget allows
 - expanding long multi-turn scheduling and handoff failures
 - tightening the judge-filter layer after the first live Path B training run
+- adding richer timestamped provenance windows where source freshness materially affects the ground truth
+- expanding the limitations and bias analysis whenever new task families or source domains are added
 
 Maintenance owner: the benchmark author or the next repo inheritor responsible for Week 11 artifacts. Any `v0.2` release should document changed counts, rubric revisions, and contamination-check deltas explicitly rather than silently regenerating tasks.
