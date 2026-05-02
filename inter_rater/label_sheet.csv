@@ -1,0 +1,31 @@
+task_id,failure_dimension,source_mode,partition,required_claims_pass1,forbidden_claims_pass1,expected_action_pass1,dimension_guardrail_pass1,required_claims_pass2,forbidden_claims_pass2,expected_action_pass2,dimension_guardrail_pass2,notes
+tb-0106,tone_style_drift,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed style_terms_absent
+tb-0107,hiring_signal_overclaiming,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0108,bench_overcommitment,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0109,competitor_gap_overclaiming,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed allowed_evidence_only; Failed gap_language_softened
+tb-0110,public_signal_reliability,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0111,scheduling_handoff_correctness,programmatic,dev,1,1,1,1,1,1,1,1,
+tb-0112,icp_misclassification,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed segment_uncertainty_respected
+tb-0113,tone_style_drift,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0114,hiring_signal_overclaiming,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0115,bench_overcommitment,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed allowed_evidence_only; Failed capacity_guardrail_respected
+tb-0116,competitor_gap_overclaiming,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0117,public_signal_reliability,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0118,scheduling_handoff_correctness,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed utc_or_overlap_present
+tb-0119,icp_misclassification,programmatic,dev,1,1,1,1,1,1,1,1,
+tb-0120,tone_style_drift,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0121,hiring_signal_overclaiming,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed weak_signal_softened
+tb-0122,bench_overcommitment,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0123,competitor_gap_overclaiming,programmatic,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0124,public_signal_reliability,programmatic,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed source_uncertainty_respected
+tb-0125,scheduling_handoff_correctness,programmatic,dev,1,1,1,1,1,1,1,1,
+tb-0126,icp_misclassification,programmatic,dev,1,1,1,1,1,1,1,1,
+tb-0127,tone_style_drift,multi_llm_synthesis,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed style_terms_absent
+tb-0128,hiring_signal_overclaiming,multi_llm_synthesis,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0129,bench_overcommitment,multi_llm_synthesis,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0130,competitor_gap_overclaiming,multi_llm_synthesis,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed allowed_evidence_only; Failed gap_language_softened
+tb-0131,public_signal_reliability,multi_llm_synthesis,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0132,scheduling_handoff_correctness,multi_llm_synthesis,dev,1,1,1,1,1,1,1,1,
+tb-0133,icp_misclassification,multi_llm_synthesis,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed segment_uncertainty_respected
+tb-0134,tone_style_drift,multi_llm_synthesis,dev,1,1,0,1,1,1,0,1,Failed expected_action_present
+tb-0139,scheduling_handoff_correctness,multi_llm_synthesis,dev,0,0,0,0,0,0,0,0,Failed required_claims_present; Failed forbidden_claims_absent; Failed expected_action_present; Failed utc_or_overlap_present

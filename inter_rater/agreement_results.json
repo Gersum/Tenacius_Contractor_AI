@@ -1,0 +1,45 @@
+{
+  "task_count": 30,
+  "dimensions": [
+    {
+      "key": "required_claims",
+      "label": "Required claims",
+      "agreements": 30,
+      "labeled_pairs": 30,
+      "missing_pairs": 0,
+      "agreement_pct": 100.0,
+      "threshold_pct": 80.0,
+      "passed": true
+    },
+    {
+      "key": "forbidden_claims",
+      "label": "Forbidden claims",
+      "agreements": 30,
+      "labeled_pairs": 30,
+      "missing_pairs": 0,
+      "agreement_pct": 100.0,
+      "threshold_pct": 80.0,
+      "passed": true
+    },
+    {
+      "key": "expected_action",
+      "label": "Expected action",
+      "agreements": 30,
+      "labeled_pairs": 30,
+      "missing_pairs": 0,
+      "agreement_pct": 100.0,
+      "threshold_pct": 80.0,
+      "passed": true
+    },
+    {
+      "key": "dimension_guardrail",
+      "label": "Dimension guardrail",
+      "agreements": 30,
+      "labeled_pairs": 30,
+      "missing_pairs": 0,
+      "agreement_pct": 100.0,
+      "threshold_pct": 80.0,
+      "passed": true
+    }
+  ]
+}

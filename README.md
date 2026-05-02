@@ -16,9 +16,9 @@ Complete at the current interim checkpoint:
 
 Still in progress:
 
-- live Path B ORPO / SimPO training run
-- completed human inter-rater agreement relabel cycle
+- broader held-out evaluation of the completed Path B ORPO run
 - live eval-tier calibration on the held-out slice
+- broader learned-component evaluation beyond the current held-out smoke test
 
 ## Architecture
 
@@ -69,7 +69,7 @@ flowchart LR
 - public-signal enrichment pipeline for funding, job posts, layoffs, leadership change, and AI maturity
 - competitor-gap brief generation using the attached reference benchmark
 - self-hosted Cal.com booking client with API mode and explicit fallback mode
-- HubSpot-shaped CRM sync with enrichment timestamp and signal fields
+- live HubSpot contact sync using standard contact fields, plus local artifacts that retain the richer Tenacious enrichment payload
 - runtime trace logging to JSONL with optional Langfuse mirroring when credentials and SDK are available
 - tau2 retail baseline score and trajectory evidence
 - operator UI that runs the pipeline, refreshes evidence, and recomputes eval scores from the browser
@@ -91,6 +91,7 @@ Optional packages currently referenced:
 
 - `playwright` for public-page enrichment when installed
 - `langfuse` for direct trace mirroring when `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` are configured
+- `huggingface_hub` and `datasets` for local dataset publication to Hugging Face Hub
 
 ## Directory Index
 
@@ -158,8 +159,11 @@ The app reads values from `.env` when present. Start from `.env.example`. The mo
 | `OPENROUTER_API_KEY` | Enables live LLM drafting through OpenRouter. | empty unless intentionally enabled |
 | `OPENROUTER_MODEL` | Model name for live drafting. | `openai/gpt-4.1-mini` |
 | `OPENROUTER_BASE_URL` | OpenRouter API base URL. | `https://openrouter.ai/api/v1` |
-| `HUBSPOT_ACCESS_TOKEN` | Reserved for future live HubSpot wiring; current repo persists local snapshots instead. | empty |
-| `HUBSPOT_PORTAL_ID` | Reserved for future live HubSpot wiring. | empty |
+| `HF_TOKEN` | Hugging Face access token for dataset publication. | empty |
+| `HF_DATASET_REPO_ID` | Hugging Face dataset repo id in `username/repo_name` form. | empty |
+| `HF_MODEL_REPO_ID` | Reserved for future adapter/model publication. | empty |
+| `HUBSPOT_ACCESS_TOKEN` | Enables live HubSpot contact create/update using standard fields (`email`, `firstname`, `lastname`, `company`, `phone`, `website`). Richer Tenacious fields stay in the local artifact unless you add matching custom HubSpot properties. | empty |
+| `HUBSPOT_PORTAL_ID` | Optional portal identifier recorded into the local HubSpot artifact for debugging and auditability. | empty |
 | `CALCOM_BASE_URL` | General Cal.com base URL used by the booking client. | `http://127.0.0.1:3004` |
 | `CALCOM_APP_BASE_URL` | UI-origin Cal.com URL used for booking links and legacy local booking fallback. | `http://127.0.0.1:3004` |
 | `CALCOM_API_BASE_URL` | Separate API-v2 origin if your self-hosted setup exposes one. | `http://127.0.0.1:3003` |
@@ -231,7 +235,7 @@ That guide walks through the exact browser steps to demonstrate:
 - email generation
 - simulated reply and qualification
 - Cal.com booking artifact, including whether the run used `api` mode or `fallback` mode
-- HubSpot artifact with enrichment fields
+- HubSpot artifact showing both the standard live-sync fields and the richer local enrichment payload
 - SMS warm-lead scheduling
 - traces, score log, and evidence graph
 
@@ -255,6 +259,7 @@ python3 generation_scripts/build_tenacious_bench.py
 python3 -m eval.tenacious_bench.scoring_evaluator tenacious_bench_v0_1/dev/tasks.jsonl
 python3 -m eval.tenacious_bench.contamination_check
 python3 training/train_path_b_critic.py
+python3 training/publish_huggingface_dataset.py
 ```
 
 To spend OpenRouter budget on the `multi_llm_synthesis` slice, run:
@@ -276,6 +281,16 @@ Primary benchmark artifacts:
 - [eval/tenacious_bench/scoring_evaluator.py](/Users/gersumasfaw/Downloads/week_10/eval/tenacious_bench/scoring_evaluator.py)
 - [generation_scripts/build_tenacious_bench.py](/Users/gersumasfaw/Downloads/week_10/generation_scripts/build_tenacious_bench.py)
 - [reports/artifacts/week11_bench_report.pdf](/Users/gersumasfaw/Downloads/week_10/reports/artifacts/week11_bench_report.pdf)
+- [training/unsloth_colab_runbook.md](/Users/gersumasfaw/Downloads/week_10/training/unsloth_colab_runbook.md)
+- [docs/huggingface_publication.md](/Users/gersumasfaw/Downloads/week_10/docs/huggingface_publication.md)
+- [cost_log.md](/Users/gersumasfaw/Downloads/week_10/cost_log.md)
+
+## Public Artifacts
+
+- HuggingFace dataset URL: https://huggingface.co/datasets/recordabebe/tenacious_bench_v0_1
+- HuggingFace model URL: not required for Path B at current state
+- Blog post URL: [Tenacious-Bench: A Sales-Agent Benchmark for Public-Signal Grounding, Tone, and Handoff Reliability](https://medium.com/@recordabebe2/tenacious-bench-a-sales-agent-benchmark-for-public-signal-grounding-tone-and-handoff-reliability-b4feef96b2f3)
+- Community engagement URL: [τ²-Bench issue #291](https://github.com/sierra-research/tau2-bench/issues/291)
 
 ## Honest Status
 
@@ -286,24 +301,31 @@ What is strong right now:
 - structured enrichment outputs and CRM snapshot fields
 - trace-backed operator UI demo
 - imported tau2 dev baseline evidence
+- verified live HubSpot contact creation using standard contact properties against a real email address, with the richer Tenacious enrichment payload preserved in the local artifact
+
 
 What still depends on real external accounts or additional benchmark work:
 
-- live Resend or MailerSend delivery
-- live Africa's Talking round-trips
-- live HubSpot Developer Sandbox writes
+- live MailerSend delivery (MailerSend API key not set in this repo)
+- custom HubSpot contact properties if you want Tenacious-specific enrichment fields written directly into HubSpot instead of only into the local artifact
+
+Note on configured integrations:
+
+- `RESEND_API_KEY` is present in `.env` so Resend-based delivery can be enabled when `SINK_MODE` is turned off.
+- `AFRICASTALKING_API_KEY` and `AFRICASTALKING_USERNAME` are present in `.env`, enabling Africa's Talking transports when `SINK_MODE` is turned off.
+- HubSpot live sync is enabled when `HUBSPOT_ACCESS_TOKEN` is set; this repo currently has a HubSpot token in `.env` but custom Tenacious properties still require creation in the HubSpot account before the pipeline will write them live.
+
+Caveat: Keep `SINK_MODE=true` for safe demos. Even when provider keys are present, `SINK_MODE` prevents live outbound sends until explicitly disabled.
 
 ## What Is Next
 
 High-level next steps:
 
 1. complete the 30-task human inter-rater cycle and revise any weak rubric dimensions
-2. run a live small-model Path B training job
-3. evaluate the trained critic on the sealed held-out split
-4. publish dataset, report, and community write-up once the held-out pass is frozen
-- verified live Cal.com calendar writes against a running local Cal.com web app plus a separate API service in this workspace
-- verified Langfuse cloud traces
-- Acts III through V deliverables such as probes, ablations, held-out traces, and final memo
+2. evaluate the completed Path B ORPO run on the sealed held-out split
+3. publish the blog post and community-engagement artifact now that the dataset URL exists
+4. freeze the held-out pass and finalize the external write-up around the honest Delta A / Delta B result
+5. optionally extend live CRM sync from standard HubSpot properties to custom Tenacious properties after those contact fields are created in HubSpot
 
 ## Handoff Notes
 
@@ -311,7 +333,7 @@ Concrete successor issues to expect immediately:
 
 - Email is still a sink adapter, not a real Resend or MailerSend transport, even when provider keys are present.
 - SMS is still a sink adapter, not a real Africa's Talking client.
-- HubSpot writes are local snapshot artifacts, not live CRM object creation or activity logging.
+- HubSpot contact creation/update is live when `HUBSPOT_ACCESS_TOKEN` is configured and the private app has contact scopes. Custom Tenacious enrichment fields are still stored locally unless matching HubSpot contact properties are created first.
 - Cal.com local booking works best through the web-app-backed legacy endpoint; some self-hosted images expose `/api/v2/bookings` as a broken proxy unless a separate API service is running.
 - Public-signal enrichment is compliance-aware and traceable, but it does not yet implement a true 60-day job-post velocity computation or source-specific scrapers for BuiltIn, Wellfound, and LinkedIn public pages.
 - AI maturity scoring and competitor-gap generation are simplified heuristics and do not yet satisfy the full challenge spec for peer selection, weighted six-signal scoring, or sector-position math.

@@ -51,6 +51,45 @@ Three contamination checks are run before held-out use:
 
 Final pass status: **passed**. The current committed report is `tenacious_bench_v0_1/contamination_check.json`.
 
+## Inter-Rater Agreement Matrix
+
+The 30-task two-pass relabel cycle is now complete on the committed `dev`-split packet. The exact subset lives in [inter_rater/sample_tasks.jsonl](/Users/gersumasfaw/Downloads/week_10/inter_rater/sample_tasks.jsonl:1), the completed sheet is [inter_rater/label_sheet.csv](/Users/gersumasfaw/Downloads/week_10/inter_rater/label_sheet.csv:1), and the computed matrix is saved in [inter_rater/agreement_results.md](/Users/gersumasfaw/Downloads/week_10/inter_rater/agreement_results.md:1).
+
+Sampling policy for the committed packet:
+
+- partition: `dev` only, to preserve the sealed held-out split
+- coverage: all seven failure dimensions represented
+- source modes: `21 programmatic`, `9 multi_llm_synthesis`
+- total: `30` tasks
+
+| Rubric dimension | Agreement % | Threshold | Current status | Next action |
+|---|---:|---:|---|---|
+| Required claims | 100.0% | 80% | pass | no revision needed |
+| Forbidden claims | 100.0% | 80% | pass | no revision needed |
+| Expected action | 100.0% | 80% | pass | no revision needed |
+| Dimension guardrail | 100.0% | 80% | pass | no revision needed |
+
+Revision rule: if any dimension lands below `80%`, revise the rubric language, document the diagnosis, and rerun the affected subset before freezing the benchmark. The current committed run cleared all four dimensions on the first recorded pass, so no revision loop was triggered.
+
 ## Cost Tracking
 
 The committed scaffold cost is still `$0.00` in external API and compute spend because generation, scoring, and contamination checks all run locally. Future OpenRouter synthesis, Colab, or RunPod training runs should append timestamped entries to `cost_log.md`, including provider, purpose, and exact spend.
+
+## Live Training Execution Status
+
+A first real Path B training run has now been completed outside the local repo on **Google Colab T4**:
+
+- algorithm: `ORPO`
+- backbone: `Qwen/Qwen2.5-0.5B-Instruct`
+- train rows: `94`
+- eval rows: `11`
+- global steps: `24`
+- wall-clock runtime: `97.7594` seconds
+- final train loss: `1.5820321440696716`
+
+This closes the “training stack not yet exercised” gap, but it does **not** yet justify a deployment claim. A held-out smoke test on task `tb-0169` (`tone_style_drift`) produced no measurable improvement:
+
+- baseline score: `0.2`
+- trained-adapter score: `0.2`
+
+Interpretation: the first ORPO run was a **technical training success** but a **weak held-out generation result**. The repo should therefore treat this adapter as experimental and non-deployment-ready until a broader held-out pass shows positive lift.
