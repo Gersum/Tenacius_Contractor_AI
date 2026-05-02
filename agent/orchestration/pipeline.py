@@ -46,7 +46,11 @@ class ConversionEnginePipeline:
             provider_name="africas_talking_sink",
             sink_mode=settings.outbound_mode != "live",
         )
-        self.hubspot_client = HubSpotMCPClient(settings.runtime_artifacts_dir)
+        self.hubspot_client = HubSpotMCPClient(
+            settings.runtime_artifacts_dir,
+            access_token=settings.hubspot_access_token,
+            portal_id=settings.hubspot_portal_id,
+        )
         self.calcom_client = CalComBookingClient(
             runtime_dir=settings.runtime_artifacts_dir,
             base_url=settings.calcom_base_url,

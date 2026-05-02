@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from urllib import error
+from urllib import error, request
 
 from agent.calendar.calcom import CalComBookingClient, CalComBookingError, InvalidCalComWebhookError
 from agent.channels.email.handler import (
@@ -20,15 +20,115 @@ from agent.channels.sms.handler import (
     SmsHandler,
 )
 from agent.config import Settings
+from agent.crm.hubspot_mcp import HubSpotMCPClient
 from agent.enrichment.pipeline import EnrichmentPipeline
 from agent.enrichment.public_signals import PublicPageSnapshot, PublicSignalCollector
-from agent.models.schemas import Channel, ConfidenceLevel, LeadRecord, LeadStatus, MessageDraft
+from agent.models.schemas import (
+    CalendarBooking,
+    Channel,
+    CompetitorGapBrief,
+    ConfidenceLevel,
+    ConversationState,
+    HiringSignalBrief,
+    LeadRecord,
+    LeadStatus,
+    MessageDraft,
+    QualificationDecision,
+    ScoredSignal,
+    SourceRef,
+)
 from agent.orchestration.pipeline import ConversionEnginePipeline
 from agent.traces.logger import JsonlTraceLogger
 from eval.tau_bench.runner import TauBenchRunner
 
 
 class SmokeTests(unittest.TestCase):
+    def _sample_lead(self) -> LeadRecord:
+        return LeadRecord(
+            company_name="Northstar Analytics",
+            domain="northstaranalytics.example",
+            synthetic_contact_name="Amina Bekele",
+            synthetic_contact_email="amina@northstaranalytics.example",
+            synthetic_contact_phone="+251911000000",
+        )
+
+    def _sample_conversation(self) -> ConversationState:
+        return ConversationState(
+            lead_id="lead_test",
+            channel=Channel.EMAIL,
+            stage=LeadStatus.BOOKED,
+            qualification_status="qualified",
+            booking_status="booked",
+        )
+
+    def _sample_hiring_signal_brief(self) -> HiringSignalBrief:
+        source_ref = SourceRef(title="Crunchbase funding round", url="https://example.com/funding")
+        return HiringSignalBrief(
+            company_name="Northstar Analytics",
+            crunchbase_ref="https://example.com/crunchbase",
+            segment_recommendation=LeadRecord.__dataclass_fields__["icp_segment"].default,
+            segment_confidence=ConfidenceLevel.HIGH,
+            funding_signal=ScoredSignal(
+                name="recent_funding",
+                value="Series A funding closed in the last 90 days",
+                confidence=ConfidenceLevel.HIGH,
+                source_refs=[source_ref],
+            ),
+            job_post_signal=ScoredSignal(
+                name="job_post_velocity",
+                value="8 open roles today vs 3 sixty days ago",
+                confidence=ConfidenceLevel.HIGH,
+                source_refs=[source_ref],
+            ),
+            layoff_signal=ScoredSignal(
+                name="layoffs",
+                value="No layoffs.csv match found",
+                confidence=ConfidenceLevel.MEDIUM,
+                source_refs=[source_ref],
+            ),
+            leadership_change_signal=ScoredSignal(
+                name="leadership_change",
+                value="New VP Engineering hired in the last 60 days",
+                confidence=ConfidenceLevel.MEDIUM,
+                source_refs=[source_ref],
+            ),
+            ai_maturity_score=2,
+            bench_match_summary="python: 7 available; data: 9 available",
+            ai_maturity_reasoning=["3 AI-adjacent roles open", "No named Head of AI"],
+            source_refs=[source_ref],
+        )
+
+    def _sample_competitor_gap_brief(self) -> CompetitorGapBrief:
+        source_ref = SourceRef(title="Peer benchmark", url="https://example.com/peer")
+        return CompetitorGapBrief(
+            company_name="Northstar Analytics",
+            sector="analytics",
+            peer_group_definition="Series A analytics firms with active hiring",
+            prospect_position_summary="Behind top quartile on AI leadership depth",
+            recommended_hook="AI leadership gap plus hiring velocity suggests a near-term staffing need.",
+            confidence=ConfidenceLevel.MEDIUM,
+            source_refs=[source_ref],
+        )
+
+    def _sample_qualification(self) -> QualificationDecision:
+        return QualificationDecision(
+            status="qualified",
+            reason="Prospect asked for next steps",
+            booking_recommended=True,
+            confidence=ConfidenceLevel.HIGH,
+        )
+
+    def _sample_booking(self) -> CalendarBooking:
+        return CalendarBooking(
+            booking_id="booking_123",
+            event_type_slug="tenacious-discovery",
+            attendee_email="amina@northstaranalytics.example",
+            host_email="delivery-lead@example.com",
+            scheduled_for="2026-05-02T09:00:00Z",
+            booking_url="https://cal.example/book/booking_123",
+            preview_ref="/tmp/booking.json",
+        )
+
     def test_pipeline_runs_and_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -289,6 +389,72 @@ class SmokeTests(unittest.TestCase):
             self.assertEqual(summaries[0]["pass_at_1"], 0.5)
             self.assertEqual(summaries[1]["run_label"], "reproduction_check")
             self.assertEqual(summaries[1]["evaluated_simulations"], 1)
+
+    def test_hubspot_sync_uses_stub_mode_without_token(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            client = HubSpotMCPClient(Path(temp_dir))
+            result = client.sync_contact(
+                lead=self._sample_lead(),
+                conversation=self._sample_conversation(),
+                hiring_signal_brief=self._sample_hiring_signal_brief(),
+                competitor_gap_brief=self._sample_competitor_gap_brief(),
+                qualification=self._sample_qualification(),
+                booking=self._sample_booking(),
+            )
+
+            self.assertEqual(result.status, "stubbed")
+            preview = json.loads(Path(result.preview_ref).read_text(encoding="utf-8"))
+            self.assertEqual(preview["mode"], "stub")
+            self.assertEqual(preview["result"]["status"], "stubbed")
+
+    def test_hubspot_sync_creates_contact_when_live_credentials_are_present(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            client = HubSpotMCPClient(Path(temp_dir), access_token="token", portal_id="12345")
+            responses = [{"results": []}, {"id": "201"}]
+
+            def fake_urlopen(req: request.Request, timeout: int = 0, **kwargs) -> _FakeHTTPResponse:
+                self.assertEqual(req.headers["Authorization"], "Bearer token")
+                payload = responses.pop(0)
+                return _FakeHTTPResponse(payload)
+
+            with patch("agent.crm.hubspot_mcp.request.urlopen", side_effect=fake_urlopen):
+                result = client.sync_contact(
+                    lead=self._sample_lead(),
+                    conversation=self._sample_conversation(),
+                    hiring_signal_brief=self._sample_hiring_signal_brief(),
+                    competitor_gap_brief=self._sample_competitor_gap_brief(),
+                    qualification=self._sample_qualification(),
+                    booking=self._sample_booking(),
+                )
+
+            self.assertEqual(result.status, "created")
+            self.assertEqual(result.record_id, "201")
+            preview = json.loads(Path(result.preview_ref).read_text(encoding="utf-8"))
+            self.assertEqual(preview["mode"], "live")
+            self.assertEqual(preview["portal_id"], "12345")
+            self.assertEqual(preview["result"]["status"], "created")
+
+    def test_hubspot_sync_records_failure_when_api_errors(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            client = HubSpotMCPClient(Path(temp_dir), access_token="token")
+
+            def fake_urlopen(req: request.Request, timeout: int = 0, **kwargs) -> _FakeHTTPResponse:
+                raise error.URLError("hubspot unavailable")
+
+            with patch("agent.crm.hubspot_mcp.request.urlopen", side_effect=fake_urlopen):
+                result = client.sync_contact(
+                    lead=self._sample_lead(),
+                    conversation=self._sample_conversation(),
+                    hiring_signal_brief=self._sample_hiring_signal_brief(),
+                    competitor_gap_brief=self._sample_competitor_gap_brief(),
+                    qualification=self._sample_qualification(),
+                    booking=self._sample_booking(),
+                )
+
+            self.assertEqual(result.status, "failed")
+            preview = json.loads(Path(result.preview_ref).read_text(encoding="utf-8"))
+            self.assertEqual(preview["result"]["status"], "failed")
+            self.assertIn("hubspot unavailable", preview["error"])
 
     def test_email_handler_routes_inbound_reply_webhook_to_callback(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -860,6 +1026,20 @@ class SmokeTests(unittest.TestCase):
                     {"triggerEvent": "BOOKING_CANCELLED", "bookingUid": "booking_uid_123"},
                     signature="wrongsecret",
                 )
+
+
+class _FakeHTTPResponse:
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.payload = payload
+
+    def read(self) -> bytes:
+        return json.dumps(self.payload).encode("utf-8")
+
+    def __enter__(self) -> "_FakeHTTPResponse":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        return None
 
 
 if __name__ == "__main__":

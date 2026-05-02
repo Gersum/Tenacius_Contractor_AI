@@ -1,80 +1,42 @@
-# Memo: Tenacious Intelligence Agent Strategy
+Tenacious-Bench Final Memo
 
-## Page 1: The Decision
+[[PAGE 1]]
 
-### Executive Summary
-We built the **Tone-Anchored Multi-Stage Grounding (TAMSG)** conversion engine to turn public-company signals into Tenacious-aligned outreach, qualification, and scheduling actions. On the sealed held-out evaluation, TAMSG achieved **89.1% Pass@1**, up from the Day-1 baseline of **72.67%**, a gain of **16.43 percentage points** at roughly flat unit cost (**$0.0212** vs. **$0.0199** per task). We recommend a **30-day pilot in Segment 01 (Recently Funded Series A/B) at 60 thoughtful touches per week with a $50 weekly software cap; proceed only if grounded outreach delivers at least a 7% reply rate and keeps stalled threads below 15% within the 30-day window**.
+Page 1 - The Decision
 
-### Cost per Qualified Lead
-For this memo, a **qualified lead** is defined as a thread that reaches the `qualify_reply` step in `artifacts/traces/agent_trace_log.jsonl`. In the current runtime trace sample, **27 of 31** synthetic prospect interactions reached `qualify_reply`, so the qualified-lead rate is **87.1%**. Using the sealed-eval TAMSG average LLM cost of **$0.0212 per task**, the visible derivation is:
+Executive summary
+Tenacious-Bench v0.1 shows a deterministic held-out Delta A lift of +0.2381 average score points over the Week 10-style baseline, with a reported 95% confidence interval of [0.08, 0.18] and paired bootstrap p = 0.031 on 42 held-out tasks. Delta B is flat in the current scaffold: on the same backbone and the same correction-task shape, the prompt-only control averages 0.619 while the critic-correction path averages 0.8571, but the first live ORPO smoke test on task tb-0169 was 0.2 to 0.2, so the trained adapter has not yet reproduced the scaffolded lift. Recommendation: do not deploy the trained Path B component yet; keep the benchmark and deterministic correction harness, and only promote the learned critic after a broader held-out pass shows positive lift, stable behavior outside rewrite-friendly cases, and acceptable production monitoring metrics.
 
-`cost per qualified lead = $0.0212 x (31 total threads / 27 qualified threads) = $0.0243`
+Decision details
+- Headline Delta A: baseline average score 0.6190, critic-correction average score 0.8571, lift +0.2381 on the 42-task held-out slice.
+- Statistical read: paired bootstrap p = 0.031; reported 95% CI [0.08, 0.18] from the committed ablation scaffold.
+- Delta B, reported honestly: on the same backbone and the same intervention shape, prompt-only average score is also 0.6190, so the current advantage comes from the deterministic critic-correction path, not from a proven learned-model gain.
+- Cost per task without the trained component: $0.0212; with the trained component: $0.0241.
+- Latency per task without the trained component: 106 ms; with the trained component: 123 ms.
 
-Input decomposition:
-- **LLM spend per task:** **$0.0212** (`ablation_results.json`, `tamsg_method`)
-- **Trace denominator:** **31** total runtime threads (`artifacts/traces/agent_trace_log.jsonl`)
-- **Qualified threads:** **27** reached `qualify_reply` (`artifacts/traces/agent_trace_log.jsonl`)
-- **Derived cost per qualified lead:** **$0.0243**
+Production recommendation
+Do not deploy the trained Path B adapter as a production guardrail yet. The recommendation rests on three facts carried forward from the evidence above: the scaffolded held-out lift is +0.2381, the learned smoke test is flat at 0.2 to 0.2 on tb-0169, and the added component still raises cost from $0.0212 to $0.0241 per task. What should stay: the benchmark, evidence graph, contamination checks, and standard-field HubSpot integration are all deployment-useful today. What must change before deployment: complete the 30-task inter-rater cycle, run a full held-out evaluation for the trained critic rather than the scaffold alone, and show that the learned component beats the prompt-only control without introducing new tone or grounding regressions.
 
-This is not a full live-production CAC number because it excludes human review time and external API overhead, but it is a transparent synthetic unit-cost estimate and is far below the cost of a human-written touch.
+Evidence anchors
+- Held-out benchmark results: ablations/ablation_results.json and ablations/held_out_traces.jsonl
+- Live Path B run status: training/training_run.log
+- Dataset publication: https://huggingface.co/datasets/recordabebe/tenacious_bench_v0_1
 
-### Speed-to-Lead Delta: Stalled-Thread Rates
-For this memo, a **stalled thread** uses the challenge definition from `seed/email_sequences/reengagement.md`:
+[[PAGE 2]]
 
-`stalled_rate = (prospects who replied engaged/curious but did not book within 14 days) / (total prospects who replied engaged/curious)`
+Page 2 - The Skeptic's Appendix
 
-Measured against the current synthetic trace set:
-- **Manual Tenacious baseline:** **30-40%** stalled threads (`seed/email_sequences/reengagement.md`)
-- **TAMSG measured sample:** **0 of 27 qualified-reply threads stalled**, or **0.0%** (`artifacts/traces/agent_trace_log.jsonl`)
-- **Delta vs. baseline:** **30-40 percentage points lower**
+What Tenacious-Bench v0.1 still does not capture
+- Cross-account repetition risk. v0.1 scores single outputs well, but it does not yet detect whether a model reuses the same outreach pattern too aggressively across many prospects. v0.2 should add campaign-level diversity checks and near-duplicate clustering across batches.
+- Downstream meeting quality. v0.1 measures whether outreach is grounded and compliant, not whether the resulting meetings are worth AE time. v0.2 should join benchmark tasks to post-meeting quality labels and no-show outcomes.
+- Human escalation quality. v0.1 checks whether the agent abstains or softens claims, but not whether the handoff package to a human seller is complete and decision-useful. v0.2 should score escalation summaries, missing-context rates, and SLA compliance.
+- Long-horizon thread recovery. v0.1 is mostly single-turn or short-horizon. It does not yet capture how the system behaves after a skeptical reply, a calendar failure, or a week-long pause. v0.2 should add multi-turn recovery trajectories with state carryover.
 
-This is directionally strong but should be treated as **suggestive rather than conclusive**, because the denominator is a synthetic sample and some booking outcomes used fallback or local-integration scaffolding rather than a fully externalized production stack.
+Public-signal lossiness
+Ground truth is lossy because AI maturity, hiring intensity, and competitor gaps are inferred from public traces such as job posts, funding events, and team pages. Quietly sophisticated companies can look immature in public data, while loud but shallow companies can look more advanced than they are. In practice, that means the current benchmark can over-reward cautious generic grounding and under-reward sharper personalization that would be justified by private referral context or fresher internal account knowledge. The operational fix for v0.2 is to attach confidence bands and provenance windows to every public-signal claim and score the model separately on calibration, not just final wording.
 
-### Competitive-Gap Outbound Performance
-Two outbound variants matter commercially:
-- **Signal-grounded outbound:** outreach anchored on public signals, specifically **AI maturity scoring plus a top-quartile competitor gap**
-- **Generic outbound:** a general Tenacious capability pitch without prospect-specific signal grounding
+Honest unresolved training failure
+The first live ORPO run was a technical success on Colab T4, but the held-out smoke test on tb-0169 showed no gain: baseline 0.2, trained output 0.2. The failure mode is straightforward: the learned adapter still drifts into explanation or prompt-echo behavior when asked to rewrite weak outreach, so it is not yet reliable as a replacement for the Week 10 generator or as a production critic. Tightening the prompt shape reduced raw prompt echoing but did not produce a score lift, so the next fix would be to retrain on shorter rewrite-format preference pairs and evaluate the model as a critic layer before asking it to generate full rewrites.
 
-The repo does **not** contain a clean randomized A/B log with both variants and measured reply counts, so I am treating the reply-rate comparison as **benchmark-informed, not an in-repo causal estimate**. The relevant public benchmark ranges from `seed/baseline_numbers.md` are:
-- **Signal-grounded outbound reply rate:** **7-12%**
-- **Generic cold outbound reply rate:** **1-3%**
-- **Delta:** **6-9 percentage points**; midpoint delta **7.5 percentage points**
-
-Sample context from our own system: the current runtime trace contains **31 synthetic interactions** and **27 qualified-reply threads**, and the outreach path in those traces uses the grounded prompt path rather than a generic randomized control. That means the benchmark delta is appropriate for **pilot planning**, but not yet for a hard causal claim.
-
-### Pilot Scope Recommendation
-- **Segment:** **01 — Recently Funded Series A/B**
-- **Lead volume:** **60 thoughtful touches per week** (matches Tenacious internal SDR operating target)
-- **Budget:** **$50 per week software budget** for LLM and workflow overhead during the 30-day pilot
-- **30-day success criterion:** **Proceed only if grounded outreach reaches at least a 7% reply rate and keeps stalled threads below 15% over the pilot window**
-
-Why this segment: it is the most natural fit for a signal-grounded motion because funding events are public, fresh, and easy to verify, which lowers hallucination risk and gives the model a concrete reason to open the conversation.
-
----
-
-## Page 2: The Skeptic's Appendix
-
-### Failure Modes Beyond τ²-Bench
-1. **"Offshore-vibe" objection.** A prospect reads Tenacious as a commodity staffing shop instead of a high-context engineering partner. The mechanism still "completes the task," but the business outcome is negative because brand trust erodes before discovery.
-2. **Bench mismatch drift.** The outreach mentions a skill cluster that is no longer current in the delivery bench. The model may be factually consistent with stale grounding but commercially wrong, leading to low-quality meetings and wasted AE time.
-3. **Brand-reputation roast.** A competitor-gap message is directionally correct but phrased too sharply. The likely failure is not a bad benchmark score; it is brand damage from sounding smug or adversarial.
-4. **Cross-thread context leakage.** In a multi-company rollout, the system could accidentally reuse an insight pattern too specifically across accounts. That creates confidentiality risk even if each single-thread response appears fluent.
-
-### Public-Signal Lossiness: AI Maturity Scoring
-- **False negative mode — Quietly sophisticated.** A company may show few or no public AI job posts while still operating a capable internal AI or data-science function.
-  - **Wrong agent action:** It under-segments the account, skips the specialized-capability-gap hook, or sends a low-conviction generic note.
-  - **Business impact:** Tenacious wastes a scarce high-quality touch and misses the chance to position against a real delivery gap.
-
-- **False positive mode — Loud but shallow.** A company may post multiple "AI" roles that are actually generic application-development or platform-maintenance jobs.
-  - **Wrong agent action:** It overstates the prospect's AI maturity and pitches Segment 04-style transformation credibility that the buyer has not actually earned.
-  - **Business impact:** Tenacious looks presumptuous, damages credibility early, and risks a segment mismatch that depresses reply quality even if the prospect answers.
-
-### Honest Unresolved Failure From the Mechanism
-**Failure BOC-003 — Nairobi time-zone gap during SMS handoff.** In the probe library, the model can still suggest impossible East Africa Time windows for West Coast prospects when fallback scheduling moves to SMS and the model is reasoning under pressure instead of relying on a deterministic calendar check.
-
-- **Probe category:** scheduling / time-zone reasoning failure under multi-turn pressure
-- **Triggering condition:** late-stage handoff after qualification, especially when the thread moves from email into fallback SMS scheduling
-- **What the mechanism still gets wrong:** it produces a slot that sounds polite and specific but is operationally impossible for the buyer
-- **Business impact if deployed anyway:** each failure burns a high-intent thread at the last mile, creating avoidable rework for the AE and converting a qualified conversation into a stalled one; at a planning level, even a 15% failure rate in SMS handoffs would mean **150 broken scheduling attempts per 1,000 handoff threads**
-
-The memo recommendation therefore assumes a **guardrail**: do not scale SMS fallback scheduling beyond the pilot until slot selection is deterministic and time-zone normalized before the message is drafted.
+Kill-switch trigger
+Disable the trained component immediately if any of the following occurs in production: complaint rate on trained-component sends rises above 2% over any rolling 100-send window, grounded-output violations exceed 5% on the weekly human review sample, or cost per qualified thread rises above the baseline path by more than the observed $0.0029 per-task uplift without a matching reply-rate gain. Those thresholds are justified by the current memo evidence: the measured cost delta is small, the learned lift is not yet proven, and there is no room to accept a quality regression in exchange for extra spend. If the kill switch fires, fall back to the deterministic baseline path and reroute failures for rubric or data-pipeline debugging before another training run.
